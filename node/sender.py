@@ -64,5 +64,5 @@ class Sender(Actor):
 			print(h)
 
 	def showlocalFiles(self,args):
-		for i in self.available_files: 
+		for i in self.available_files:
 			print(i)
