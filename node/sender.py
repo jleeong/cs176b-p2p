@@ -4,10 +4,13 @@ from .exceptions import no_host_file
 import os
 class Sender(Actor):
 	"""Class to encompass the sending functions of a P2P node"""
-	def __init__(self):
+	def __init__(self,m):
 		"""Constructor for the Sender class. Needs to scan local filesystem
 		to determine what data exists on current node. Uses this information
-		to resopnd to P2P requests"""
+		to resopnd to P2P requests. m represents the mode to function in and is one of
+		[g|d|s] for gnutella, distributed hash tables, and semantic routing
+		respectively."""
+		self.mode = m
 		if os.path.isdir("files"):
 			self.available_files = os.listdir("files")
 			print("	Sender created")

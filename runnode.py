@@ -2,6 +2,7 @@ from node import sender
 from node import receiver
 from node import actor
 import threading
+import sys
 
 def getFile(actor):
 	"""getFile will construct relevant information then pass it to
@@ -28,8 +29,13 @@ def __main__():
 	execution. Uses node.Actor abstract class for user input to function call
 	mapping"""
 	print("Starting node...")
-	s = sender.Sender()
-	r = receiver.Receiver()
+	# read in P2P algorithm type
+	if len(sys.argv)!=2:
+		print("Usage python3 runnode.py [g,d,s]")
+		sys.exit("ERROR: Missing P2P Mode")
+	mode = sys.argv[1]
+	s = sender.Sender(mode)
+	r = receiver.Receiver(mode)
 	# construct and run Receiver thread to run as a daemon process,
 	# listens passively for incoming TCP requests.
 	rthread = threading.Thread(target=r.listen,args=(8080,),)
