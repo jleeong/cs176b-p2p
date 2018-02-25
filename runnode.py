@@ -18,6 +18,11 @@ user_options = {
 	'help' : helpMsg
 }
 def __main__():
+	"""Main program loop. Creates a receiver thread to passively listen
+	for incoming TCP connections and starts a main user loop to prompt
+	for user action. Uses instances of node.Receiver and node.Sender classes for
+	execution. Uses node.Actor abstract class for user input to function call
+	mapping"""
 	print("Starting node...")
 	s = sender.Sender()
 	r = receiver.Receiver()
