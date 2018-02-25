@@ -32,4 +32,4 @@ class Sender(Actor):
 	def sendRequest(self,file_details):
 		"""sendRequest accesses the P2P network to query for a desired
 		file. Network access and behavior determined by P2P algorithm."""
-		print("Sending request for "+file_details+"...")
+		print("Sending request for "+file_details[0]+"...")

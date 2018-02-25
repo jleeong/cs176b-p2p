@@ -7,7 +7,7 @@ def getFile(actor):
 	"""getFile will construct relevant information then pass it to
 	an actor for execution."""
 	filename = input("Enter filename: ")
-	actor.act('get',filename)
+	actor.act('get',[filename])
 
 def helpMsg(actor):
 	"""actor parameter is a stub parameter in this function."""
@@ -28,22 +28,23 @@ def __main__():
 	r = receiver.Receiver()
 	# construct and run Receiver thread to run as a daemon process,
 	# listens passively for incoming TCP requests.
-	rthread = threading.Thread(target=r.listen,args=(80,),)
+	rthread = threading.Thread(target=r.listen,args=(8080,),)
 	rthread.daemon = True
 	rthread.start()
-	# begin REPL loop for main P2P program.
-	try:
-		while True:
-			# prompt user for input
-			uo = input("Prompt:~> ")
-			if uo == 'exit':
-				break
-			elif uo in user_options:
-				user_options[uo](s)
-			else:
-				helpMsg(s)
-	except KeyboardInterrupt:
-		print('')
+	# if receiver thread successful, begin REPL loop for main P2P program.
+	if(rthread.isAlive()):
+		try:
+			while True:
+				# prompt user for input
+				uo = input("Prompt:~> ")
+				if uo == 'exit':
+					break
+				elif uo in user_options:
+					user_options[uo](s)
+				else:
+					helpMsg(s)
+		except KeyboardInterrupt:
+			print('')
 
 	# cleanup threads (because rthread.daemon = True, it dies when main
 	# process ends.
