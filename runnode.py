@@ -17,10 +17,14 @@ def helpMsg(actor):
 def listHosts(actor):
 	actor.act('list',[])
 
+def listLocalFiles(actor):
+	actor.act('list_files',[])
+
 user_options = {
 	'get' : getFile,
 	'help' : helpMsg,
 	'list' : listHosts,
+	'list_files': listLocalFiles
 }
 def __main__():
 	"""Main program loop. Creates a receiver thread to passively listen
