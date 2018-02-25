@@ -1,7 +1,13 @@
+from .sender import Sender
 class Receiver:
 	"""Class to encompass the TCP listening functions of the P2P node."""
 	def __init__(self):
+		"""Constructor for passive TCP receiver on current node. Has
+		internal instance of a receiver to perform responses to incoming
+		P2P requests"""
+		self.sender = Sender()
 		print("	Receiver created")
+
 	def listen(self,portnum):
 		"""listen places the Receiver object in an execution loop to listen
 		for incoming TCP requests to the designated port. After receiving a
