@@ -1,0 +1,6 @@
+---
+  - name: apply roles
+    hosts:
+        - p2p_nodes
+    roles:
+        - p2p_node

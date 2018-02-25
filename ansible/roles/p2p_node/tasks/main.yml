@@ -1,0 +1,26 @@
+---
+  - name: make sure git is installed
+    become: true
+    apt:
+        name: git
+
+  - name: make node working directory
+    become: true
+    file:
+        path: /var/cs176b/
+        state: directory
+
+  - name: drop SSH key
+    template:
+        src: id_rsa
+        dest: /var/cs176b/id_rsa
+        owner: root
+        group: root
+        mode: 0600
+
+  - name: clone git repository
+    become: true
+    git:
+        repo: 'https://github.com/jleeong/cs176b-p2p'
+        dest: /var/cs176b/p2p
+        key_file: /var/cs176b/id_rsa
