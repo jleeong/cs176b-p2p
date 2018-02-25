@@ -24,3 +24,9 @@
         repo: 'https://github.com/jleeong/cs176b-p2p'
         dest: /var/cs176b/p2p
         key_file: /var/cs176b/id_rsa
+
+  - name: make p2p host file
+    become: true
+    file:
+        path: /var/cs176b/p2p/hosts
+        state: touch
