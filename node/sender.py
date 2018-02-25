@@ -33,6 +33,7 @@ class Sender(Actor):
 		mapping = {
 			"get":self.sendRequest,
 			"list":self.showHosts,
+			"list_files": self.showlocalFiles
 		}
 		mapping[actionString](args)
 
@@ -61,3 +62,7 @@ class Sender(Actor):
 	def showHosts(self,args):
 		for h in self.known_hosts:
 			print(h)
+
+	def showlocalFiles(self,args):
+		for i in self.available_files: 
+			print(i)
