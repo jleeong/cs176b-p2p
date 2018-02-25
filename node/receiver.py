@@ -9,12 +9,12 @@ class Receiver:
 		and respond accordingly"""
 		print("Listening at :" + str(portnum))
 
-	def parseRequest(tcp_request):
+	def parseRequest(self,tcp_request):
 		"""parseRequest will parse the received TCP request and return an
 		array containing relevant details for further processing"""
 		print(tcp_request)
 
-	def respond(request_details):
+	def respond(self,request_details):
 		"""respond will examine the supplied request_details (supplied by
 		 parseRequest) and determine the proper action to take. (Send requested
 		 file or ignore the request)"""
