@@ -1,7 +1,22 @@
 from node import sender
 from node import receiver
+from node import actor
 import threading
 
+def getFile(actor):
+	"""getFile will construct relevant information then pass it to
+	an actor for execution."""
+	filename = input("Enter filename: ")
+	actor.act('get',filename)
+
+def helpMsg(actor):
+	"""actor parameter is a stub parameter in this function."""
+	print("Avaiable options: get|help|exit")
+
+user_options = {
+	'get' : getFile,
+	'help' : helpMsg
+}
 def __main__():
 	print("Starting node...")
 	s = sender.Sender()
@@ -15,16 +30,19 @@ def __main__():
 	try:
 		while True:
 			# prompt user for input
-			ui = input("Prompt:")
-			if ui == 'exit':
+			uo = input("Prompt:~> ")
+			if uo == 'exit':
 				break
-			print(test)
+			elif uo in user_options:
+				user_options[uo](s)
+			else:
+				helpMsg(s)
 	except KeyboardInterrupt:
 		print('')
+
+	# cleanup threads (because rthread.daemon = True, it dies when main
+	# process ends.
 	print("Cleaning up...")
-	print("	Closing Receiver...",end='')
-	rthread.join()
-	print("done")
 	print("bye")
 
 if __name__ == "__main__":
