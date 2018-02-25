@@ -37,3 +37,13 @@ class Receiver:
 		"""respond will examine the supplied request_details (supplied by
 		 parseRequest) and determine the proper action to take. (Send requested
 		 file or ignore the request)"""
+		if(self.mode == 'g'):
+			print("gnutella")
+		elif(self.mode == 'd'):
+			print("dht")
+		elif(self.mode == 's'):
+			print("semantic")
+		else:
+			exception = illegal_mode.IllegalMode(self.mode);
+			print(str(exception))
+			raise exception

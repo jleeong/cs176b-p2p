@@ -1,6 +1,5 @@
 from .actor import Actor
-from .exceptions import no_file_dir
-from .exceptions import no_host_file
+from .exceptions import *
 import os
 class Sender(Actor):
 	"""Class to encompass the sending functions of a P2P node"""
@@ -48,6 +47,16 @@ class Sender(Actor):
 		file. Network access and behavior determined by P2P algorithm."""
 
 		print("Sending request for "+file_details[0]+"...")
+		if(self.mode == 'g'):
+			print("gnutella")
+		elif(self.mode == 'd'):
+			print("dht")
+		elif(self.mode == 's'):
+			print("semantic")
+		else:
+			exception = illegal_mode.IllegalMode(self.mode);
+			print(str(exception))
+			raise exception
 
 	def showHosts(self,args):
 		for h in self.known_hosts:
