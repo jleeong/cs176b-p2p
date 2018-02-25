@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 **/files
+hosts
 
 # Compiled class file
 *.class

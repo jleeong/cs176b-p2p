@@ -13,9 +13,13 @@ def helpMsg(actor):
 	"""actor parameter is a stub parameter in this function."""
 	print("Avaiable options: get|help|exit")
 
+def listHosts(actor):
+	actor.act('list',[])
+
 user_options = {
 	'get' : getFile,
-	'help' : helpMsg
+	'help' : helpMsg,
+	'list' : listHosts,
 }
 def __main__():
 	"""Main program loop. Creates a receiver thread to passively listen

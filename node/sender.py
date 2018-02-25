@@ -1,5 +1,6 @@
 from .actor import Actor
 from .exceptions import no_file_dir
+from .exceptions import no_host_file
 import os
 class Sender(Actor):
 	"""Class to encompass the sending functions of a P2P node"""
@@ -14,12 +15,22 @@ class Sender(Actor):
 			exception = no_file_dir.NoFileDir()
 			print(exception.__str___())
 			raise exception
+		if os.path.isfile("hosts"):
+			# read in known hosts
+			with open("hosts") as f:
+				self.known_hosts = f.readlines()
+			self.known_hosts = [x.strip() for x in self.known_hosts]
+		else:
+			exception = no_host_file.NoHostFile()
+			print(exception.__str___())
+			raise exception
 
 	def act(self,actionString,args):
 		"""act implementation of Actor superclass"""
 		print(actionString,args)
 		mapping = {
 			"get":self.sendRequest,
+			"list":self.showHosts,
 		}
 		mapping[actionString](args)
 
@@ -32,4 +43,9 @@ class Sender(Actor):
 	def sendRequest(self,file_details):
 		"""sendRequest accesses the P2P network to query for a desired
 		file. Network access and behavior determined by P2P algorithm."""
+
 		print("Sending request for "+file_details[0]+"...")
+
+	def showHosts(self,args):
+		for h in self.known_hosts:
+			print(h)
