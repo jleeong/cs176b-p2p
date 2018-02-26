@@ -113,6 +113,7 @@ class Sender(Actor):
 	def response_listener(self,active_socket,responses):
 		"""response_listener is used by handle_responses() to handle each open
 		HTTPConnection. Appends a response to responses"""
-		resp = active_socket.recv(4096)
-		responses.append(resp.decode('utf-8').split('\n')[1].split('%'))
+		resp = active_socket.recv(4096).decode('utf-8')
+		if '\n' in resp:
+			responses.append(resp.split('\n')[1].split('%'))
 		active_socket.close()
