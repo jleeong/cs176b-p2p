@@ -8,7 +8,7 @@ def getFile(actor):
 	"""getFile will construct relevant information then pass it to
 	an actor for execution."""
 	filename = input("Enter filename: ")
-	results = actor.act('get',[filename,8080])
+	results = actor.act('get',[filename,8080,'0%'])
 	tuples = [(c[0],i) for i,c in enumerate(results)]
 	print(results[min(tuples)[1]])
 

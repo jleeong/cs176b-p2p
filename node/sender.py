@@ -53,7 +53,8 @@ class Sender(Actor):
 		"""sendRequest accesses the P2P network to query for a desired
 		file. Network access and behavior determined by P2P algorithm.
 		request_details[0] = filename;
-		request_details[1] = destination port."""
+		request_details[1] = destination port;
+		request_details[2] = metadata"""
 		print("Sending request for "+request_details[0]+"...")
 		if(self.mode == 'g'):
 			"""gnutella routing broadcasts the request to every known
@@ -63,7 +64,9 @@ class Sender(Actor):
 			for h in self.known_hosts:
 				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				s.connect((h, request_details[1]))
-				msg = "GET /files/"+request_details[0]+" HTTP/1.1\n"+self.local_adddress
+				metadata = request_details[2].split('%')
+				metadata[0] = str(int(metadata[0])+1)
+				msg = "GET /files/"+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_adddress+"%"
 				s.send(msg.encode('utf-8'))
 				neighbor_connections.append(s)
 			return self.handle_responses(neighbor_connections)
