@@ -31,8 +31,8 @@ class Receiver:
 	def recvRequest(self,incoming_socket,source_info):
 		"""parseRequest will parse the received TCP request and return an
 		array containing relevant details for further processing"""
-		print("Received" + source_info[0] + str(source_info[1]))
-		data = incoming_socket.recv(2048)
+		print("Received " + source_info[0] + ":"+str(source_info[1]))
+		data = incoming_socket.recv(2048).decode("utf-8")
 		#GET /files/test HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nAccept-Encoding: identity\r\n\r\n
 		body = ''
 		if("Content-Length" in data):
