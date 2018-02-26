@@ -61,10 +61,11 @@ class Sender(Actor):
 			responses."""
 			neighbor_connections = []
 			for h in self.known_hosts:
-				req = http.client.HTTPConnection(h+":"+str(request_details[1]))
-				req.set_debuglevel(5)
-				req.request("GET","/files/"+request_details[0],body=self.local_adddress)
-				neighbor_connections.append(req)
+				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				s.connect((h, request_details[1]))
+				msg = "GET /files/"+request_details[0]+" HTTP/1.1\n"+self.local_adddress
+				s.send(msg.encode('utf-8'))
+				neighbor_connections.append(s)
 			self.handle_responses(neighbor_connections)
 		elif(self.mode == 'd'):
 			print("dht")
@@ -97,6 +98,7 @@ class Sender(Actor):
 			t.start()
 			threads.append(t)
 		# stop execution while waiting for responses
+		print("waiting on responses...")
 		for t in threads:
 			t.join()
 		# parse through responses and output chosen path
@@ -107,6 +109,5 @@ class Sender(Actor):
 	def response_listener(self,active_socket,responses):
 		"""response_listener is used by handle_responses() to handle each open
 		HTTPConnection"""
-		resp = active_socket.getresponse()
-		responses.append(resp.split('%'))
-		resp.close()
+		resp = active_socket.recv(4096)
+		responses.append(resp.decode('utf-8').split('%'))

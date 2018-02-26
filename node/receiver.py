@@ -33,11 +33,7 @@ class Receiver:
 		array containing relevant details for further processing"""
 		print("Received " + source_info[0] + ":"+str(source_info[1]))
 		data = incoming_socket.recv(2048).decode("utf-8")
-		#GET /files/test HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nAccept-Encoding: identity\r\n\r\n
-		body = ''
-		if("Content-Length" in data):
-			body = incoming_socket.recv(4096)
-		data = data.split(' ')
+		data = data.split('\n')
 		self.respond([incoming_socket,data])
 
 	def respond(self,request_details):
@@ -46,12 +42,10 @@ class Receiver:
 		 file or ignore the request)
 		 request_details[0] = client_facing_socket
 		 request_details[1] = data
-		 request_details[2] = HTTP resource
-		 request_details[3] = hop chain"""
+		 """
 		if(self.mode == 'g'):
-			print("gnutella")
-			request_details[0].sendall("response")
-			request_details[0].close()
+			print(request_details[1])
+			request_details[0].send("HTTP/1.1 200 OK".encode('utf-8'))
 		elif(self.mode == 'd'):
 			print("dht")
 		elif(self.mode == 's'):
