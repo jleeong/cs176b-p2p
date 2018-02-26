@@ -103,9 +103,10 @@ class Sender(Actor):
 		# find the path with the minimum amount of hops
 		tuples = [(c[0],i) for i,c in enumerate(responses)]
 		print(responses[min(tuples)[1]])
-		
+
 	def response_listener(self,active_socket,responses):
 		"""response_listener is used by handle_responses() to handle each open
 		HTTPConnection"""
 		resp = active_socket.getresponse()
 		responses.append(resp.split('%'))
+		resp.close()

@@ -37,7 +37,7 @@ class Receiver:
 		body = ''
 		if("Content-Length" in data):
 			body = incoming_socket.recv(4096)
-		data = data.split(' ')
+		data = data.split(' ')a
 		self.respond([incoming_socket,data])
 
 	def respond(self,request_details):
@@ -50,6 +50,8 @@ class Receiver:
 		 request_details[3] = hop chain"""
 		if(self.mode == 'g'):
 			print("gnutella")
+			request_details[0].sendall("response")
+			request_details[0].close()
 		elif(self.mode == 'd'):
 			print("dht")
 		elif(self.mode == 's'):
