@@ -3,6 +3,7 @@ from .exceptions import *
 import os
 import http.client
 import socket
+import threading
 class Sender(Actor):
 	"""Class to encompass the sending functions of a P2P node"""
 	def __init__(self,m):
@@ -92,7 +93,7 @@ class Sender(Actor):
 		# create a thread for each socket created in a request
 		# each thread will store result in responses[]
 		for sock in active_connections:
-			t = threading.Thread(target=self.response_listener,args(sock,responses))
+			t = threading.Thread(target=self.response_listener,args=(sock,responses))
 			t.start()
 			threads.append(t)
 		# stop execution while waiting for responses
@@ -102,6 +103,7 @@ class Sender(Actor):
 		# find the path with the minimum amount of hops
 		tuples = [(c[0],i) for i,c in enumerate(responses)]
 		print(responses[min(tuples)[1]])
+		
 	def response_listener(self,active_socket,responses):
 		"""response_listener is used by handle_responses() to handle each open
 		HTTPConnection"""
