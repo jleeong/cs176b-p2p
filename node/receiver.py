@@ -37,7 +37,7 @@ class Receiver:
 		body = ''
 		if("Content-Length" in data):
 			body = incoming_socket.recv(4096)
-		data = data.split(' ')a
+		data = data.split(' ')
 		self.respond([incoming_socket,data])
 
 	def respond(self,request_details):
