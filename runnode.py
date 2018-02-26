@@ -11,9 +11,12 @@ def getFile(actor):
 	an actor for execution."""
 	filename = input("Enter filename: ")
 	results = actor.act('get',[filename,port_number,'0%'])
-	tuples = [(c[0],i) for i,c in enumerate(results)]
-	print("File found as this minimum hop count path:")
-	print(results[min(tuples)[1]])
+	if len(results) > 0:
+		tuples = [(c[0],i) for i,c in enumerate(results)]
+		print("File found as this minimum hop count path:")
+		print(results[min(tuples)[1]])
+	else:
+		print("No results found.")
 
 def helpMsg(actor):
 	"""actor parameter is a stub parameter in this function."""
