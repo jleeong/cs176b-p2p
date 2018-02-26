@@ -22,21 +22,32 @@ class Receiver:
 		ss.bind(('',portnum))
 		ss.listen(10)
 		while True:
-			(cs, sip) = ss.accept()
-			t = threading.Thread(target=self.parseRequest,args=(cs,sip))
+			(cs, si) = ss.accept()
+			t = threading.Thread(target=self.recvRequest,args=(cs,si))
 			t.daemon = True
 			t.start()
 		print("Listening at :" + str(portnum))
 
-	def parseRequest(self,incoming_socket,source_ip):
+	def recvRequest(self,incoming_socket,source_info):
 		"""parseRequest will parse the received TCP request and return an
 		array containing relevant details for further processing"""
-		print(tcp_request)
+		print("Received" + source_info[0] + str(source_info[1]))
+		data = incoming_socket.recv(2048)
+		#GET /files/test HTTP/1.1\r\nHost: 127.0.0.1:8080\r\nAccept-Encoding: identity\r\n\r\n
+		body = ''
+		if("Content-Length" in data):
+			body = incoming_socket.recv(4096)
+		data = data.split(' ')
+		self.respond([incoming_socket,data])
 
 	def respond(self,request_details):
 		"""respond will examine the supplied request_details (supplied by
 		 parseRequest) and determine the proper action to take. (Send requested
-		 file or ignore the request)"""
+		 file or ignore the request)
+		 request_details[0] = client_facing_socket
+		 request_details[1] = data
+		 request_details[2] = HTTP resource
+		 request_details[3] = hop chain"""
 		if(self.mode == 'g'):
 			print("gnutella")
 		elif(self.mode == 'd'):
