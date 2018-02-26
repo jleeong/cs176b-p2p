@@ -61,12 +61,12 @@ class Sender(Actor):
 			neighbor and determines which route to take based on the
 			responses."""
 			neighbor_connections = []
+			metadata = request_details[2].split('%')
+			metadata[0] = str(int(metadata[0])+len(self.known_hosts))
 			try:
 				for h in self.known_hosts:
 					s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 					s.connect((h, request_details[1]))
-					metadata = request_details[2].split('%')
-					metadata[0] = str(int(metadata[0])+1)
 					msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_adddress+"%"
 					s.send(msg.encode('utf-8'))
 					neighbor_connections.append(s)

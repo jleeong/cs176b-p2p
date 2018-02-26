@@ -32,7 +32,7 @@ class Receiver:
 	def recvRequest(self,incoming_socket,source_info):
 		"""parseRequest will parse the received TCP request and return an
 		array containing relevant details for further processing"""
-		print("Received " + source_info[0] + ":"+str(source_info[1]))
+		#print("Received " + source_info[0] + ":"+str(source_info[1]))
 		data = incoming_socket.recv(2048).decode("utf-8")
 		data = data.split('\n')
 		self.respond([incoming_socket,data])
@@ -41,7 +41,7 @@ class Receiver:
 		"""respond will examine the supplied request_details (supplied by
 		 parseRequest) and determine the proper action to take. (Send requested
 		 file or ignore the request)
-		 request_details[0] = client_facing_socket
+		 request_details[0] = client facing socket
 		 request_details[1] = data
 		 """
 		if(self.mode == 'g'):
@@ -51,14 +51,25 @@ class Receiver:
 				print(data)
 				filename = data[0].split(' ')[1]
 				metadata = data[1].split('%')
-				if filename in self.sender.available_files:
-					metadata[0] = str(int(metadata[0])+1)
-					response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)+self.sender.local_adddress
-					cs.send(response_msg.encode('utf-8'))
-				else:
-					forward_results = self.sender.sendRequest([filename,])
-					response_msg = "HTTP/1.1 404 NotFound"
-					cs.send(response_msg.encode('utf-8'))
+				if self.sender.local_adddress not in metadata:
+				# ignore any packets that have our local address in the
+				# hop chain to elimitate infinite loops
+					if filename in self.sender.available_files:
+						# file found on local node; append local address to hop chain;
+						# increase packet count; reply to client socket
+						metadata[0] = str(int(metadata[0])+1)
+						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)+self.sender.local_adddress
+						cs.send(response_msg.encode('utf-8'))
+					else:
+						# file not on local node; append local address to hopchain;
+						# query all neighbors; return the best of any results
+						forward_results = self.sender.sendRequest([filename,self.port_number,data[1]+self.sender.local_adddress])
+						print(forward_results)
+						if len(forward_results>0):
+							tuples = [(c[0],i) for i,c in enumerate(forward_results)]
+							selected_path = forward_results[min(tuples)[1]]
+							response_msg = "HTTP/1.1 200 OK\n"+'%'.join(selected_path)
+							cs.send(response_msg.encode('utf-8'))
 			finally:
 				cs.close()
 		elif(self.mode == 'd'):
