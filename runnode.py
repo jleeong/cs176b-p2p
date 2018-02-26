@@ -8,7 +8,7 @@ def getFile(actor):
 	"""getFile will construct relevant information then pass it to
 	an actor for execution."""
 	filename = input("Enter filename: ")
-	actor.act('get',[filename])
+	actor.act('get',[filename,8080])
 
 def helpMsg(actor):
 	"""actor parameter is a stub parameter in this function."""
