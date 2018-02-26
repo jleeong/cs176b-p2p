@@ -39,7 +39,7 @@ class Sender(Actor):
 			"list":self.showHosts,
 			"list_files": self.showlocalFiles
 		}
-		mapping[actionString](args)
+		return mapping[actionString](args)
 
 	def sendFile(self,sending_details):
 		"""sendFile will construct a TCP connection to the designated
@@ -66,7 +66,7 @@ class Sender(Actor):
 				msg = "GET /files/"+request_details[0]+" HTTP/1.1\n"+self.local_adddress
 				s.send(msg.encode('utf-8'))
 				neighbor_connections.append(s)
-			self.handle_responses(neighbor_connections)
+			return self.handle_responses(neighbor_connections)
 		elif(self.mode == 'd'):
 			print("dht")
 		elif(self.mode == 's'):
@@ -88,7 +88,7 @@ class Sender(Actor):
 		"""handle_responses takes in a list of HTTPConnections that are created
 		when Sender sends a request. It may be one to many HTTPConnections based
 		on the mode of operation for sending a request. It creates a thread to
-		listen for responses to the request before choosing the best response"""
+		listen for responses to the request. Returns a list of all responses"""
 		responses = []
 		threads = []
 		# create a thread for each socket created in a request
@@ -101,13 +101,10 @@ class Sender(Actor):
 		print("waiting on responses...")
 		for t in threads:
 			t.join()
-		# parse through responses and output chosen path
-		# find the path with the minimum amount of hops
-		tuples = [(c[0],i) for i,c in enumerate(responses)]
-		print(responses[min(tuples)[1]])
+		return responses
 
 	def response_listener(self,active_socket,responses):
 		"""response_listener is used by handle_responses() to handle each open
-		HTTPConnection"""
+		HTTPConnection. Appends a response to responses"""
 		resp = active_socket.recv(4096)
 		responses.append(resp.decode('utf-8').split('%'))

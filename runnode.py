@@ -8,7 +8,9 @@ def getFile(actor):
 	"""getFile will construct relevant information then pass it to
 	an actor for execution."""
 	filename = input("Enter filename: ")
-	actor.act('get',[filename,8080])
+	results = actor.act('get',[filename,8080])
+	tuples = [(c[0],i) for i,c in enumerate(results)]
+	print(results[min(tuples)[1]])
 
 def helpMsg(actor):
 	"""actor parameter is a stub parameter in this function."""
