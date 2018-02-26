@@ -66,7 +66,7 @@ class Sender(Actor):
 				s.connect((h, request_details[1]))
 				metadata = request_details[2].split('%')
 				metadata[0] = str(int(metadata[0])+1)
-				msg = "GET /files/"+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_adddress+"%"
+				msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_adddress+"%"
 				s.send(msg.encode('utf-8'))
 				neighbor_connections.append(s)
 			return self.handle_responses(neighbor_connections)
