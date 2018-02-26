@@ -48,7 +48,6 @@ class Receiver:
 			try:
 				cs = request_details[0]
 				data = request_details[1]
-				print(data)
 				filename = data[0].split(' ')[1]
 				metadata = data[1].split('%')
 				if self.sender.local_adddress not in metadata:
@@ -58,15 +57,18 @@ class Receiver:
 						# file found on local node; append local address to hop chain;
 						# increase packet count; reply to client socket
 						metadata[0] = str(int(metadata[0])+1)
-						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)+self.sender.local_adddress
+						metadata.append(self.sender.local_adddress)
+						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)
 						cs.send(response_msg.encode('utf-8'))
 					else:
 						# file not on local node; append local address to hopchain;
-						# query all neighbors; return the best of any results
-						forward_results = self.sender.sendRequest([filename,self.port_number,data[1]+self.sender.local_adddress])
-						print(forward_results)
+						# update packet count; query all neighbors;
+						# return the best of any results
+						metadata[0] = str(int(metadata[0])+len(self.sender.known_hosts))
+						metadata.append(self.sender.local_adddress)
+						forward_results = self.sender.sendRequest([filename,self.port_number,'%'.join(metadata)])
 						if len(forward_results>0):
-							tuples = [(c[0],i) for i,c in enumerate(forward_results)]
+							tuples = [(len(c),i) for i,c in enumerate(forward_results)]
 							selected_path = forward_results[min(tuples)[1]]
 							response_msg = "HTTP/1.1 200 OK\n"+'%'.join(selected_path)
 							cs.send(response_msg.encode('utf-8'))

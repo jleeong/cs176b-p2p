@@ -12,7 +12,7 @@ def getFile(actor):
 	filename = input("Enter filename: ")
 	results = actor.act('get',[filename,port_number,'0%'])
 	if len(results) > 0:
-		tuples = [(c[0],i) for i,c in enumerate(results)]
+		tuples = [(len(c),i) for i,c in enumerate(results)]
 		print("File found as this minimum hop count path:")
 		print(results[min(tuples)[1]])
 	else:
