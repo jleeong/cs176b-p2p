@@ -4,11 +4,13 @@ from node import actor
 import threading
 import sys
 
+port_number = 8080
+
 def getFile(actor):
 	"""getFile will construct relevant information then pass it to
 	an actor for execution."""
 	filename = input("Enter filename: ")
-	results = actor.act('get',[filename,8080,'0%'])
+	results = actor.act('get',[filename,port_number,'0%'])
 	tuples = [(c[0],i) for i,c in enumerate(results)]
 	print(results)
 	print(results[min(tuples)[1]])
@@ -42,10 +44,10 @@ def __main__():
 		sys.exit("ERROR: Missing P2P Mode")
 	mode = sys.argv[1]
 	s = sender.Sender(mode)
-	r = receiver.Receiver(mode)
+	r = receiver.Receiver(mode,port_number)
 	# construct and run Receiver thread to run as a daemon process,
 	# listens passively for incoming TCP requests.
-	rthread = threading.Thread(target=r.listen,args=(8080,),)
+	rthread = threading.Thread(target=r.listen,)
 	rthread.daemon = True
 	rthread.start()
 	# if receiver thread successful, begin REPL loop for main P2P program.

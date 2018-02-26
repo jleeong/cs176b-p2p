@@ -3,23 +3,24 @@ import socket
 import threading
 class Receiver:
 	"""Class to encompass the TCP listening functions of the P2P node."""
-	def __init__(self,m):
+	def __init__(self,m,portnum):
 		"""Constructor for passive TCP receiver on current node. Has
 		internal instance of a receiver to perform responses to incoming
 		P2P requests. m represents the mode to function in and is one of
 		[g|d|s] for gnutella, distributed hash tables, and semantic routing
 		respectively."""
+		self.port = portnum
 		self.mode = m
 		self.sender = Sender(m)
 		print("	Receiver created")
 
-	def listen(self,portnum):
+	def listen(self):
 		"""listen places the Receiver object in an execution loop to listen
 		for incoming TCP requests to the designated port. After receiving a
 		request, it will determine the current node has the desired resource
 		and respond accordingly"""
 		ss = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		ss.bind(('',portnum))
+		ss.bind(('',self.port))
 		ss.listen(10)
 		while True:
 			(cs, si) = ss.accept()
@@ -55,6 +56,7 @@ class Receiver:
 					response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)+self.sender.local_adddress
 					cs.send(response_msg.encode('utf-8'))
 				else:
+					forward_results = self.sender.sendRequest([filename,])
 					response_msg = "HTTP/1.1 404 NotFound"
 					cs.send(response_msg.encode('utf-8'))
 			finally:
