@@ -55,16 +55,16 @@ class Sender(Actor):
 		request_details[1] = destination port."""
 		print("Sending request for "+request_details[0]+"...")
 		if(self.mode == 'g'):
-			print("gnutella")
-			found = False
+			"""gnutella routing broadcasts the request to every known
+			neighbor and determines which route to take based on the
+			responses."""
+			neighbor_connections = []
 			for h in self.known_hosts:
-				if not found:
-					#print(h+str(request_details[1]))
-					req = http.client.HTTPConnection(h+":"+str(request_details[1]))
-					req.set_debuglevel(5)
-					req.request("GET","/files/"+request_details[0],body=self.local_adddress)
-					resp = req.getresponse()
-					print(resp)
+				req = http.client.HTTPConnection(h+":"+str(request_details[1]))
+				req.set_debuglevel(5)
+				req.request("GET","/files/"+request_details[0],body=self.local_adddress)
+				neighbor_connections.append(req)
+			self.handle_responses(neighbor_connections)
 		elif(self.mode == 'd'):
 			print("dht")
 		elif(self.mode == 's'):
@@ -81,3 +81,29 @@ class Sender(Actor):
 	def showlocalFiles(self,args):
 		for i in self.available_files:
 			print(i)
+
+	def handle_responses(self,active_connections):
+		"""handle_responses takes in a list of HTTPConnections that are created
+		when Sender sends a request. It may be one to many HTTPConnections based
+		on the mode of operation for sending a request. It creates a thread to
+		listen for responses to the request before choosing the best response"""
+		responses = []
+		threads = []
+		# create a thread for each socket created in a request
+		# each thread will store result in responses[]
+		for sock in active_connections:
+			t = threading.Thread(target=self.response_listener,args(sock,responses))
+			t.start()
+			threads.append(t)
+		# stop execution while waiting for responses
+		for t in threads:
+			t.join()
+		# parse through responses and output chosen path
+		# find the path with the minimum amount of hops
+		tuples = [(c[0],i) for i,c in enumerate(responses)]
+		print(responses[min(tuples)[1]])
+	def response_listener(self,active_socket,responses):
+		"""response_listener is used by handle_responses() to handle each open
+		HTTPConnection"""
+		resp = active_socket.getresponse()
+		responses.append(resp.split('%'))
