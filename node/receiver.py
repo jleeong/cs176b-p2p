@@ -44,8 +44,21 @@ class Receiver:
 		 request_details[1] = data
 		 """
 		if(self.mode == 'g'):
-			print(request_details[1])
-			request_details[0].send("HTTP/1.1 200 OK".encode('utf-8'))
+			try:
+				cs = request_details[0]
+				data = request_details[1]
+				print(data)
+				filename = data[0].split(' ')[1]
+				metadata = data[1].split('%')
+				if filename in self.sender.available_files:
+					metadata[0] = str(int(metadata[0])+1)
+					response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)
+					cs.send(response_msg.encode('utf-8'))
+				else:
+					response_msg = "HTTP/1.1 404 NotFound"
+					cs.send(response_msg.encode('utf-8'))
+			finally:
+				cs.close()
 		elif(self.mode == 'd'):
 			print("dht")
 		elif(self.mode == 's'):

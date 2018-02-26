@@ -61,15 +61,19 @@ class Sender(Actor):
 			neighbor and determines which route to take based on the
 			responses."""
 			neighbor_connections = []
-			for h in self.known_hosts:
-				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-				s.connect((h, request_details[1]))
-				metadata = request_details[2].split('%')
-				metadata[0] = str(int(metadata[0])+1)
-				msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_adddress+"%"
-				s.send(msg.encode('utf-8'))
-				neighbor_connections.append(s)
-			return self.handle_responses(neighbor_connections)
+			try:
+				for h in self.known_hosts:
+					s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+					s.connect((h, request_details[1]))
+					metadata = request_details[2].split('%')
+					metadata[0] = str(int(metadata[0])+1)
+					msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_adddress+"%"
+					s.send(msg.encode('utf-8'))
+					neighbor_connections.append(s)
+				return self.handle_responses(neighbor_connections)
+			finally:
+				for conn in neighbor_connections:
+					conn.close()
 		elif(self.mode == 'd'):
 			print("dht")
 		elif(self.mode == 's'):
@@ -110,4 +114,5 @@ class Sender(Actor):
 		"""response_listener is used by handle_responses() to handle each open
 		HTTPConnection. Appends a response to responses"""
 		resp = active_socket.recv(4096)
-		responses.append(resp.decode('utf-8').split('%'))
+		responses.append(resp.decode('utf-8').split('\n')[1].split('%'))
+		active_socket.close()
