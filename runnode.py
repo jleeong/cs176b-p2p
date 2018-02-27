@@ -42,8 +42,8 @@ def __main__():
 	mapping"""
 	print("Starting node...")
 	# read in P2P algorithm type
-	if len(sys.argv)!=2:
-		print("Usage python3 runnode.py [g,d,s]")
+	if not len(sys.argv)>=2:
+		print("Usage python3 runnode.py [g,d,s] [daemon]")
 		sys.exit("ERROR: Missing P2P Mode")
 	mode = sys.argv[1]
 	s = sender.Sender(mode)
@@ -53,20 +53,25 @@ def __main__():
 	rthread = threading.Thread(target=r.listen,)
 	rthread.daemon = True
 	rthread.start()
-	# if receiver thread successful, begin REPL loop for main P2P program.
-	if(rthread.isAlive()):
-		try:
-			while True:
-				# prompt user for input
-				uo = input("Prompt:~> ")
-				if uo == 'exit':
-					break
-				elif uo in user_options:
-					user_options[uo](s)
-				else:
-					helpMsg(s)
-		except KeyboardInterrupt:
-			print('')
+	if(len(sys.argv) < 3):
+		# if receiver thread successful, begin REPL loop for main P2P program.
+		if(rthread.isAlive()):
+			try:
+				while True:
+					# prompt user for input
+					uo = input("Prompt:~> ")
+					if uo == 'exit':
+						break
+					elif uo in user_options:
+						user_options[uo](s)
+					else:
+						helpMsg(s)
+			except KeyboardInterrupt:
+				print('')
+	elif sys.argv[2] == 'daemon':
+		print("Running in daemon only mode.")
+	else:
+		print("Unrecognized parameters.")
 
 	# cleanup threads (because rthread.daemon = True, it dies when main
 	# process ends.
