@@ -10,12 +10,17 @@ This requires you to have ansible installed on your system.
 1. Create the desired amount of VMs. (These must all have the same system user and password and `openssh-server` installed)
 
 _Ensure that the system user has passwordless sudo enabled._
+
 2. Connect VMs to the same virtual host only network and configure network settings
 3. Navigate to the `ansible` subdirectory
+
 `cd ansible`
+
 4. Add all the VMs IPs to the `inventory` file
 5. Copy your SSH private key to the `roles/p2p_node/templates` directory
+
 This can be done typically by `cp ~/.ssh/id_rsa ./roles/p2p_node/templates/`
+
 6. Run `ansible-playbook -b -u <VM_SYSTEM_USERNAME> -k -i inventory deploy-p2p-node.yml`
 
 _replace <VM_SYSTEM_USERNAME> with the username you created the VMs with_
