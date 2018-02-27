@@ -52,8 +52,8 @@ def __main__():
 	# listens passively for incoming TCP requests.
 	rthread = threading.Thread(target=r.listen,)
 	rthread.daemon = True
-	rthread.start()
 	if(len(sys.argv) < 3):
+		rthread.start()
 		# if receiver thread successful, begin REPL loop for main P2P program.
 		if(rthread.isAlive()):
 			try:
@@ -70,6 +70,7 @@ def __main__():
 				print('')
 	elif sys.argv[2] == 'daemon':
 		print("Running in daemon only mode.")
+		rthread.start()
 		rthread.join()
 	elif sys.argv[2] == 'client':
 		print("Running in client only mode.")
