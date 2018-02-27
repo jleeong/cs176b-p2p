@@ -15,6 +15,6 @@ fi
 
 for i in `seq 1 $count`;
 do
-    echo "docker run --name node-$i -d --network $docker_network $docker_image"
-    docker run --rm --name node-$i -d --network $docker_network $docker_image
+    echo "docker run --name node-$i -d --network $docker_network -v`pwd`/test_data/networking/node-$i.hosts:/var/cs176/p2p/hosts $docker_image"
+    docker run --rm --name node-$i -d --network $docker_network -v`pwd`/test_data/networking/node-$i.hosts:/var/cs176/p2p/hosts $docker_image
 done
