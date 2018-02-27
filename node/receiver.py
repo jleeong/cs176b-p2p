@@ -1,6 +1,7 @@
 from .sender import Sender
 import socket
 import threading
+import os
 class Receiver:
 	"""Class to encompass the TCP listening functions of the P2P node."""
 	def __init__(self,m,portnum):
@@ -53,7 +54,7 @@ class Receiver:
 				if self.sender.local_adddress not in metadata:
 				# ignore any packets that have our local address in the
 				# hop chain to elimitate infinite loops
-					if filename in self.sender.available_files:
+					if filename in os.listdir("files"):
 						# file found on local node; append local address to hop chain;
 						# increase packet count; reply to client socket
 						metadata[0] = str(int(metadata[0])+1)

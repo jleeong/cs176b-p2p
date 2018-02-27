@@ -15,7 +15,6 @@ class Sender(Actor):
 		self.mode = m
 		self.local_adddress = socket.gethostbyname(socket.gethostname())
 		if os.path.isdir("files"):
-			self.available_files = os.listdir("files")
 			print("	Sender created")
 		else:
 			exception = no_file_dir.NoFileDir()
@@ -88,7 +87,7 @@ class Sender(Actor):
 			print(h)
 
 	def showlocalFiles(self,args):
-		for i in self.available_files:
+		for i in os.listdir("files"):
 			print(i)
 
 	def handle_responses(self,active_connections):
