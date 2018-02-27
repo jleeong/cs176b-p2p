@@ -8,8 +8,7 @@ fi
 
 if [ "$(docker network ls | grep $docker_network)" == "" ]
 then
-    echo Missing docker network
-    exit 1
+    docker network create p2p_nw
 fi
 
 count=10
