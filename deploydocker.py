@@ -16,6 +16,7 @@ if  docker_nw not in existing_nw:
     subprocess.run(['docker','network','create',docker_nw])
 
 for c in containers:
+    print(c)
     subprocess.run(['docker','run','--name',c,'-d','--network',docker_nw,\
-        '-v'+os.getcwd()+'/test_data/networking'+c+'hosts:/var/cs176/p2p/hosts',\
+        '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
         docker_image])
