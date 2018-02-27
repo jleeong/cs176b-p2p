@@ -20,7 +20,7 @@ def getFile(actor):
 
 def helpMsg(actor):
 	"""actor parameter is a stub parameter in this function."""
-	print("Avaiable options: get|help|exit")
+	print("Avaiable options: get|help|exit|list_files")
 
 def listHosts(actor):
 	actor.act('list',[])
