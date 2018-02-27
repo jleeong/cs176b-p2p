@@ -2,6 +2,6 @@ FROM python:3
 
 WORKDIR /var/cs176/p2p
 RUN mkdir -p files && touch hosts
-COPY . /usr/src/app
+COPY . /var/cs176/p2p
 
-CMD ["python", "/usr/src/app/runnode.py", "g", "daemon"]
+CMD ["python", "/var/cs176/runnode.py", "g", "daemon"]
