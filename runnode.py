@@ -70,6 +70,7 @@ def __main__():
 				print('')
 	elif sys.argv[2] == 'daemon':
 		print("Running in daemon only mode.")
+		rthread.join()
 	else:
 		print("Unrecognized parameters.")
 
