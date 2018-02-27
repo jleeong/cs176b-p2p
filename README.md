@@ -31,6 +31,7 @@ This requires you to have Docker installed on your system.
 1. Create the appropriate number of nodes in the `test_data/nodes.json` file
 
 _These can be named whatever you want. If one of them has the word "ingress" in the name, docker will port map the container to you machine, enabling you to hit the container at 127.0.0.1:8080_
+
 2. `python3 genhostfiles.py`
 3. `python3 deploydocker.py`
 4. `python3 distributefiles.py <FILE_DISTRIBUTION_PERCENTAGE>`
