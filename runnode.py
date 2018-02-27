@@ -20,7 +20,7 @@ def getFile(actor):
 
 def helpMsg(actor):
 	"""actor parameter is a stub parameter in this function."""
-	print("Avaiable options: get|help|exit|list_files")
+	print("Avaiable options: get|help|exit|list_neighbors|list_files")
 
 def listHosts(actor):
 	actor.act('list',[])
@@ -31,7 +31,7 @@ def listLocalFiles(actor):
 user_options = {
 	'get' : getFile,
 	'help' : helpMsg,
-	'list' : listHosts,
+	'list_neighbors' : listHosts,
 	'list_files': listLocalFiles
 }
 def __main__():
