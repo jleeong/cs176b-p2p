@@ -24,8 +24,8 @@ for c in containers:
     print(" Copying hosts file...")
     subprocess.run(['docker','cp','networking/'+c+'.hosts',c+':/var/cs176/p2p/hosts'])
     # copy over sample files based on file percentage
-    for targetfile in numfiles:
-        if random.randint(1,100) <= file_percent:
+    for targetfile in files:
+        if random.randint(1,100) <= int(file_percent):
             print(" Copying sample file: "+targetfile)
             subprocess.run(['docker','cp','samples/'+targetfile ,\
                 c+':/var/cs176/p2p/files/'+targetfile])
