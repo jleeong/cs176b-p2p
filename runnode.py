@@ -23,7 +23,7 @@ def helpMsg(actor):
 	print("Avaiable options: get|help|exit|list_neighbors|list_files")
 
 def listHosts(actor):
-	actor.act('list',[])
+	actor.act('list_neighbors',[])
 
 def listLocalFiles(actor):
 	actor.act('list_files',[])

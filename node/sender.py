@@ -35,7 +35,7 @@ class Sender(Actor):
 		print(actionString,args)
 		mapping = {
 			"get":self.sendRequest,
-			"list":self.showHosts,
+			"list_neighbors":self.showHosts,
 			"list_files": self.showlocalFiles
 		}
 		return mapping[actionString](args)
