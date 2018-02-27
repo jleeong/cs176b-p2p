@@ -43,7 +43,7 @@ def __main__():
 	print("Starting node...")
 	# read in P2P algorithm type
 	if not len(sys.argv)>=2:
-		print("Usage python3 runnode.py [g,d,s] [daemon]")
+		print("Usage python3 runnode.py [g,d,s] [daemon|client]")
 		sys.exit("ERROR: Missing P2P Mode")
 	mode = sys.argv[1]
 	s = sender.Sender(mode)
@@ -71,6 +71,20 @@ def __main__():
 	elif sys.argv[2] == 'daemon':
 		print("Running in daemon only mode.")
 		rthread.join()
+	elif sys.argv[2] == 'client':
+		print("Running in client only mode.")
+		try:
+			while True:
+				# prompt user for input
+				uo = input("Prompt:~> ")
+				if uo == 'exit':
+					break
+				elif uo in user_options:
+					user_options[uo](s)
+				else:
+					helpMsg(s)
+		except KeyboardInterrupt:
+			print('')
 	else:
 		print("Unrecognized parameters.")
 
