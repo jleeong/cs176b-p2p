@@ -5,7 +5,7 @@ It attempts to create an acyclic non-directional graph.
 import json
 import random
 
-with open("nodes.json",'r') as nodes:
+with open("test_data/nodes.json",'r') as nodes:
     raw = ''.join(nodes.readlines())
     workingset = json.loads(raw)
 print(workingset)
@@ -16,13 +16,15 @@ print(str(total)+" nodes found.")
 try:
     # make host files
     for n in workingset:
-        hostfiles[n] = open('networking/'+n+'.hosts','w')
+        hostfiles[n] = open('test_data/networking/'+n+'.hosts','w')
         ir[n] = []
 
     # populate intermediate representation
     for i,node in enumerate(ir):
-        if(not total-1 > 0): break
-        numhosts = random.randint(0,total-1)
+        if(total==1):
+            numhosts = 1
+        else:
+            numhosts = random.randint(0,total-1)
         print("Networking "+node+". Adding "+str(numhosts)+" connections...")
         while len(workingset)>0:
             if len(ir[node]) >= numhosts: break
