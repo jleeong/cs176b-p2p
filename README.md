@@ -29,6 +29,7 @@ _replace <VM_SYSTEM_USERNAME> with the username you created the VMs with_
 This requires you to have Docker installed on your system.
 ### To create the network
 1. Create the appropriate number of nodes in the `test_data/nodes.json` file
+
 _These can be named whatever you want. If one of them has the word "ingress" in the name, docker will port map the container to you machine, enabling you to hit the container at 127.0.0.1:8080_
 2. `python3 genhostfiles.py`
 3. `python3 deploydocker.py`
