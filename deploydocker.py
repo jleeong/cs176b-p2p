@@ -18,11 +18,11 @@ if  docker_nw not in existing_nw:
 for c in containers:
     print(c)
     if 'ingress' in c:
-        cmd = ['docker','run','--name',c,'-d','--network',docker_nw,\
+        cmd = ['docker','run','--rm','--name',c,'-d','--network',docker_nw,\
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
             '-p8080:8080',docker_image]
     else:
-        cmd = ['docker','run','--name',c,'-d','--network',docker_nw,\
+        cmd = ['docker','run','--rm','--name',c,'-d','--network',docker_nw,\
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
             docker_image]
     subprocess.run(cmd)
