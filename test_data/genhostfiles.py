@@ -38,6 +38,6 @@ try:
 finally:
     # write and close host files
     for fname in hostfiles:
-        print(fname+";", ir[fname])
+        print(fname+":", ir[fname])
         hostfiles[fname].write('\n'.join(ir[fname]))
         hostfiles[fname].close()
