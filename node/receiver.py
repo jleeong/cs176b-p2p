@@ -51,11 +51,11 @@ class Receiver:
 				data = request_details[1]
 				filename = data[0].split(' ')[1]
 				metadata = data[1].split('%')
-				if self.sender.local_adddress not in metadata:
+				if self.sender.local_address not in metadata:
 				# ignore any packets that have our local address in the
 				# hop chain to elimitate infinite loops
 					# append current node to hop chain
-					metadata.append(self.sender.local_adddress)
+					metadata.append(self.sender.local_address)
 					if filename in os.listdir("files"):
 						# file found on local node;
 						# increase packet count; reply to client socket

@@ -13,7 +13,7 @@ class Sender(Actor):
 		[g|d|s] for gnutella, distributed hash tables, and semantic routing
 		respectively."""
 		self.mode = m
-		self.local_adddress = socket.gethostbyname(socket.gethostname())
+		self.local_address = socket.gethostname()
 		if os.path.isdir("files"):
 			print("	Sender created")
 		else:
