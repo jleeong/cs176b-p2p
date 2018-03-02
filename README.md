@@ -32,11 +32,11 @@ This requires you to have Docker installed on your system.
 
 _These can be named whatever you want. If one of them has the word "ingress" in the name, docker will port map the container to you machine, enabling you to hit the container at 127.0.0.1:8080_
 
-2. `python3 genhostfiles.py`
+2. `python3 gennetwork.py <NODE_CONNECTION_NUMBER>`
 3. `python3 deploydocker.py`
 4. `python3 distributefiles.py <FILE_DISTRIBUTION_PERCENTAGE> [-v]`
 
-_replace <FILE_DISTRIBUTION_PERCENTAGE> with the probability for a file to exist on a container. (e.g. 5 gives a 5% chance for a file to be on a container). Add the -v flag if you want verbosity for the file distribution_
+_Replace <NODE_CONNECTION_NUMBER> with the number of connections to make per network node. Replace <FILE_DISTRIBUTION_PERCENTAGE> with the probability for a file to exist on a container. (e.g. 5 gives a 5% chance for a file to be on a container). Add the -v flag if you want verbosity for the file distribution_
 ### To stop the network
 1. `docker stop $(docker ps -qf 'name=<SOME_COMMON_STRING>')`
 
