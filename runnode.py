@@ -10,7 +10,7 @@ def getFile(actor):
 	"""getFile will construct relevant information then pass it to
 	an actor for execution."""
 	filename = input("Enter filename: ")
-	results = actor.act('get',[filename,port_number,'0%'])
+	results = actor.act('get',[filename,port_number,'0'])
 	if len(results) > 0:
 		tuples = [(len(c),i) for i,c in enumerate(results)]
 		print("File found at this minimum hop count path:")
