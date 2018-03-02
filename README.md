@@ -34,9 +34,9 @@ _These can be named whatever you want. If one of them has the word "ingress" in 
 
 2. `python3 genhostfiles.py`
 3. `python3 deploydocker.py`
-4. `python3 distributefiles.py <FILE_DISTRIBUTION_PERCENTAGE>`
+4. `python3 distributefiles.py <FILE_DISTRIBUTION_PERCENTAGE> [-v]`
 
-_replace <FILE_DISTRIBUTION_PERCENTAGE> with the probability for a file to exist on a container. (e.g. 5 gives a 5% chance for a file to be on a container)_
+_replace <FILE_DISTRIBUTION_PERCENTAGE> with the probability for a file to exist on a container. (e.g. 5 gives a 5% chance for a file to be on a container). Add the -v flag if you want verbosity for the file distribution_
 ### To stop the network
 1. `docker stop $(docker ps -qf 'name=<SOME_COMMON_STRING>')`
 
