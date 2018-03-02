@@ -54,19 +54,19 @@ class Receiver:
 				if self.sender.local_adddress not in metadata:
 				# ignore any packets that have our local address in the
 				# hop chain to elimitate infinite loops
+					# append current node to hop chain
+					metadata.append(self.sender.local_adddress)
 					if filename in os.listdir("files"):
-						# file found on local node; append local address to hop chain;
+						# file found on local node;
 						# increase packet count; reply to client socket
 						metadata[0] = str(int(metadata[0])+1)
-						metadata.append(self.sender.local_adddress)
 						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)
 						cs.send(response_msg.encode('utf-8'))
 					else:
-						# file not on local node; append local address to hopchain;
+						# file not on local node;
 						# update packet count; query all neighbors;
 						# return the best of any results
 						metadata[0] = str(int(metadata[0])+len(self.sender.known_hosts))
-						metadata.append(self.sender.local_adddress)
 						forward_results = self.sender.sendRequest([filename,self.port_number,'%'.join(metadata)])
 						if len(forward_results>0):
 							tuples = [(len(c),i) for i,c in enumerate(forward_results)]
