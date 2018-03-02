@@ -54,6 +54,7 @@ class Receiver:
 				data = request_details[1]
 				filename = data[0].split(' ')[1]
 				metadata = data[1].split('%')
+				print(metadata)
 				if self.sender.local_address not in metadata:
 				# ignore any packets that have our local address in the
 				# hop chain to elimitate infinite loops
