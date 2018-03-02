@@ -70,8 +70,8 @@ class Receiver:
 						# update packet count; query all neighbors;
 						# return the best of any results
 						metadata[0] = str(int(metadata[0])+len(self.sender.known_hosts))
-						forward_results = self.sender.sendRequest([filename,self.port_number,'%'.join(metadata)])
-						if len(forward_results>0):
+						forward_results = self.sender.sendRequest([filename,self.port,'%'.join(metadata)])
+						if len(forward_results)>0:
 							tuples = [(len(c),i) for i,c in enumerate(forward_results)]
 							selected_path = forward_results[min(tuples)[1]]
 							response_msg = "HTTP/1.1 200 OK\n"+'%'.join(selected_path)
