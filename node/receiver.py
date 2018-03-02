@@ -59,15 +59,15 @@ class Receiver:
 				# ignore any packets that have our local address in the
 				# hop chain to elimitate infinite loops
 					# append current node to hop chain
-					metadata.append(self.sender.local_address)
 					if filename in os.listdir("files"):
-						# file found on local node;
+						# file found on local node; append self to hopchain
 						# increase packet count; reply to client socket
+						metadata.append(self.sender.local_address)
 						metadata[0] = str(int(metadata[0])+1)
 						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)
 						cs.send(response_msg.encode('utf-8'))
 					else:
-						# file not on local node;
+						# file not on local node; sender class will append to hopchain
 						# update packet count; query all neighbors;
 						# return the best of any results
 						metadata[0] = str(int(metadata[0])+len(self.sender.known_hosts))
