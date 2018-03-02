@@ -20,9 +20,9 @@ for c in containers:
     if 'ingress' in c:
         cmd = ['docker','run','--rm','--name',c,'-d','--network',docker_nw,\
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
-            '-p8080:8080',docker_image]
+            '-p8080:8080','--hostname='+c,docker_image]
     else:
         cmd = ['docker','run','--rm','--name',c,'-d','--network',docker_nw,\
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
-            docker_image]
+            '--hostname='+c,docker_image]
     subprocess.run(cmd)
