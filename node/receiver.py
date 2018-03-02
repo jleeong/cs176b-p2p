@@ -36,7 +36,10 @@ class Receiver:
 		#print("Received " + source_info[0] + ":"+str(source_info[1]))
 		data = incoming_socket.recv(2048).decode("utf-8")
 		data = data.split('\n')
-		self.respond([incoming_socket,data])
+		if(len(data)==2):
+			self.respond([incoming_socket,data])
+		else:
+			print("Invalid request: "+data)
 
 	def respond(self,request_details):
 		"""respond will examine the supplied request_details (supplied by

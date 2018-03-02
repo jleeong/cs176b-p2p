@@ -66,7 +66,7 @@ class Sender(Actor):
 				for h in self.known_hosts:
 					s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 					s.connect((h, request_details[1]))
-					msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_adddress+"%"
+					msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)+self.local_address+"%"
 					s.send(msg.encode('utf-8'))
 					neighbor_connections.append(s)
 				return self.handle_responses(neighbor_connections)
