@@ -52,11 +52,11 @@ def __main__():
 	# listens passively for incoming TCP requests.
 	rthread = threading.Thread(target=r.listen,)
 	rthread.daemon = True
-	if(len(sys.argv) < 3):
-		rthread.start()
-		# if receiver thread successful, begin REPL loop for main P2P program.
-		if(rthread.isAlive()):
-			try:
+	try:
+		if(len(sys.argv) < 3):
+			rthread.start()
+			# if receiver thread successful, begin REPL loop for main P2P program.
+			if(rthread.isAlive()):
 				while True:
 					# prompt user for input
 					uo = input("Prompt:~> ")
@@ -66,15 +66,12 @@ def __main__():
 						user_options[uo](s)
 					else:
 						helpMsg(s)
-			except KeyboardInterrupt:
-				print('')
-	elif sys.argv[2] == 'daemon':
-		print("Running in daemon only mode.")
-		rthread.start()
-		rthread.join()
-	elif sys.argv[2] == 'client':
-		print("Running in client only mode.")
-		try:
+		elif sys.argv[2] == 'daemon':
+			print("Running in daemon only mode.")
+			rthread.start()
+			rthread.join()
+		elif sys.argv[2] == 'client':
+			print("Running in client only mode.")
 			while True:
 				# prompt user for input
 				uo = input("Prompt:~> ")
@@ -84,10 +81,10 @@ def __main__():
 					user_options[uo](s)
 				else:
 					helpMsg(s)
-		except KeyboardInterrupt:
-			print('')
-	else:
-		print("Unrecognized parameters.")
+		else:
+			print("Unrecognized parameters.")
+	except KeyboardInterrupt:
+		print('')
 
 	# cleanup threads (because rthread.daemon = True, it dies when main
 	# process ends.
