@@ -12,9 +12,16 @@ def getFile(actor):
 	filename = input("Enter filename: ")
 	results = actor.act('get',[filename,port_number,'0'])
 	if len(results) > 0:
-		tuples = [(len(c),i) for i,c in enumerate(results)]
+		paths = []
+		packet_counts = 0
+		for i,c in enumerate(results):
+			paths.append((len(c),i))
+			packet_counts += int(c[0])
+		result = results[min(paths)[1]]
+		result[0] = str(packet_counts)
 		print("File found at this minimum hop count path:")
-		print(results[min(tuples)[1]])
+		print(result[1:])
+		print("Total packets generated", result[0])
 	else:
 		print("No results found.")
 

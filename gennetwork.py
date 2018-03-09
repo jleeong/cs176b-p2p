@@ -40,7 +40,7 @@ try:
             target = list(avail)[random.randint(1,len(avail))-1]
             print(" Adding "+currnode+"->"+target+" to network.")
             ir[currnode].append(target)
-            ir[target].append(currnode)
+            #ir[target].append(currnode)
             workingset.remove(target)
             networkset.append(target)
             currnode=target
@@ -48,12 +48,12 @@ try:
         target = workingset[0]
         print("Adding "+currnode+"->"+target+" to network.")
         ir[currnode].append(target)
-        ir[target].append(currnode)
+        #ir[target].append(currnode)
 
     print("Final network:")
 finally:
     # write and close host files
     for fname in hostfiles:
         print(fname+":", ir[fname])
-        hostfiles[fname].write('\n'.join(ir[fname]))
+        hostfiles[fname].write('\n'.join(set(ir[fname])))
         hostfiles[fname].close()
