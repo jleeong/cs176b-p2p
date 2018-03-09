@@ -39,7 +39,7 @@ class Receiver:
 		if(len(data)==2):
 			self.respond([incoming_socket,data])
 		else:
-			print("Invalid request: "+data)
+			print("Invalid request: ",data)
 
 	def respond(self,request_details):
 		"""respond will examine the supplied request_details (supplied by
