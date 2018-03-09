@@ -35,7 +35,7 @@ _These can be named whatever you want. If one of them has the word "ingress" in 
 2. `python3 deploydocker.py <NODE_CONNECTION_NUMBER>`
 3. `python3 distributefiles.py <FILE_DISTRIBUTION_PERCENTAGE> [-v]`
 
-_Replace <NODE_CONNECTION_NUMBER> with the number of connections to make per network node. Replace <FILE_DISTRIBUTION_PERCENTAGE> with the probability for a file to exist on a container. (e.g. 5 gives a 5% chance for a file to be on a container). Add the -v flag if you want verbosity for the file distribution_
+_Replace <NODE_CONNECTION_NUMBER> with the number of connections to make per network node. If no connection number is given, only the containers are deployed. Replace <FILE_DISTRIBUTION_PERCENTAGE> with the probability for a file to exist on a container. (e.g. 5 gives a 5% chance for a file to be on a container). Add the -v flag if you want verbosity for the file distribution_
 ### To stop the network
 1. `docker stop $(docker ps -qf 'name=<SOME_COMMON_STRING>')`
 

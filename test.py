@@ -9,7 +9,7 @@ if not len(sys.argv)==2:
 	sys.exit("ERROR: Missing P2P Mode")
 mode = sys.argv[1]
 s = sender.Sender(mode)
-with open('deployedfiles','r') as infiles:
+with open('activefiles','r') as infiles:
     files = infiles.readlines()
 ts = datetime.now().strftime('%H%M%S')
 with open('output/test-'+ts+'.csv', 'w') as outfile:

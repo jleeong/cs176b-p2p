@@ -3,7 +3,7 @@ __pycache__/
 *$py.class
 **/files
 **hosts
-deployedfiles
+
 *.csv
 # Compiled class file
 *.class
