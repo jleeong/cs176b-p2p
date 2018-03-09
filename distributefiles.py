@@ -15,6 +15,7 @@ with open('test_data/nodes.json','r') as nodes:
 if not len(sys.argv) >= 2:
     print("Usage: python3 distributefiles.py <file-percentage> [-v]")
     sys.exit("ERROR: Unrecognized parameters")
+ 
 verbose = ''
 verbose = len(sys.argv) == 3 and sys.argv[2]=='-v'
 
@@ -53,16 +54,18 @@ else:#mode = '-d'
     #hash the
     for targetfile in files:
         #compute docker container in which we will copy the file
-        m = hashlib.md5(targetfile.encode('utf-8'))
-        z = int(m.hexdigest(), 16)
-        container_number = z%num_nodes
-        if verbose: print(containers[container_number]+":")
-        # copy over file to container based on hash result
-        if verbose: print(" Copying sample file: "+targetfile)
-        active_files.append(targetfile)
-        subprocess.run(['docker','cp','test_data/samples/'+targetfile ,\
-            containers[container_number]+':/var/cs176/p2p/files/'+targetfile])
+        if random.randint(1,100) <= int(file_percent):
+            m = hashlib.md5(targetfile.encode('utf-8'))
+            z = int(m.hexdigest(), 16)
+            container_number = z%num_nodes
+            if verbose: print(containers[container_number]+":")
+            # copy over file to container based on hash result
+            if verbose: print(" Copying sample file: "+targetfile)
+            active_files.append(targetfile)
+            subprocess.run(['docker','cp','test_data/samples/'+targetfile ,\
+                containers[container_number]+':/var/cs176/p2p/files/'+targetfile])
 
+print("active files")
 for f in set(active_files):
     print(f)
 if verbose: print("Done.")
