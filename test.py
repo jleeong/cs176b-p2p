@@ -2,6 +2,7 @@ from node import sender
 from datetime import datetime
 import sys
 import argparse
+import os
 
 port_number = 8080
 
@@ -12,8 +13,7 @@ args = vars(parser.parse_args(sys.argv[1:]))
 mode = args['mode']
 
 s = sender.Sender(mode)
-with open('activefiles','r') as infiles:
-    files = infiles.readlines()
+files = os.listdir('test_data/samples')
 with open('output/test-'+args['label']+'.csv', 'w') as outfile:
     outfile.write('Filename,Packet Count,Minimum Hop Length,Hop Chain\n')
     for f in files:
