@@ -4,20 +4,25 @@ import json
 import subprocess
 import sys
 import random
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-n','--networking',dest='N',type=int,help='generates overlay network with N connections per node')
+args = vars(parser.parse_args(sys.argv[1:]))
 
 with open("test_data/nodes.json",'r') as nodes:
     raw = ''.join(nodes.readlines())
     initialset = json.loads(raw)
 print(initialset)
 
-if len(sys.argv) == 2:
+if args['N'] != None:
     try:
         print("Generating Network")
         # generate the virtual network
         hostfiles = {}
         ir = {}
         total = len(initialset)
-        num_connections = int(sys.argv[1])
+        num_connections = args['N']
         if(num_connections > total):
             sys.exit("Too many per node connections.")
         print(str(total)+" nodes found.")

@@ -14,7 +14,7 @@ parser.add_argument('-v',action='store_true',help='verbose output to show file d
 parser.add_argument('-m','--mode',default='g', dest='mode',help='[g|d] gnutella or distributed hash table',required=True)
 parser.add_argument('percentage', help='file distribution percentage')
 
-args = parser.parse_args(sys.argv[1:])
+args = vars(parser.parse_args(sys.argv[1:]))
 
 with open('test_data/nodes.json','r') as nodes:
     raw = ''.join(nodes.readlines())
