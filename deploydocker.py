@@ -99,7 +99,7 @@ verbose = args['v']
 mode = args['mode']
 
 active_files = []
-files = os.listdir('test_data/samples')
+files = sorted(os.listdir('test_data/samples'))
 
 if(mode == 'g'):
     if verbose: print("distributing randomly as per gnutella routing")

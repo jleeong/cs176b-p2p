@@ -13,7 +13,7 @@ args = vars(parser.parse_args(sys.argv[1:]))
 mode = args['mode']
 
 s = sender.Sender(mode)
-files = os.listdir('test_data/samples')
+files = sorted(os.listdir('test_data/samples'))
 with open('output/test-'+args['label']+'.csv', 'w') as outfile:
     outfile.write('Filename,Packet Count,Minimum Hop Length,Hop Chain\n')
     for f in files:
