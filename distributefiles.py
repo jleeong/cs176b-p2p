@@ -7,34 +7,26 @@ import subprocess
 import os
 import sys
 import hashlib
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-v',action='store_true',help='verbose output to show file distribution')
+parser.add_argument('-m','--mode',default='g', dest='mode',help='[g|d] gnutella or distributed hash table',required=True)
+parser.add_argument('percentage', help='file distribution percentage')
+
+args = parser.parse_args(sys.argv[1:])
 
 with open('test_data/nodes.json','r') as nodes:
     raw = ''.join(nodes.readlines())
     containers = json.loads(raw)
 
-if not len(sys.argv) >= 2:
-    print("Usage: python3 distributefiles.py <file-percentage> [-v]")
-    sys.exit("ERROR: Unrecognized parameters")
- 
-verbose = ''
-verbose = len(sys.argv) == 3 and sys.argv[2]=='-v'
-
-mode = '-g'
-if(len(sys.argv) == 4):
-    if(sys.argv[2]=='-v'):
-        verbose = True
-    mode = sys.argv[3]
-
-    if(mode !='-d' and mode!='-g'):
-        print("Usage: python3 distributefiles.py <file-percentage> [-v] [-d or -g]")
-        sys.exit("ERROR: Unrecognized parameters")
-
-file_percent = sys.argv[1]
-
+verbose = args['v']
+mode = args['mode']
+file_percent = args['percentage']
 
 active_files = []
 
-if(mode == '-g'):
+if(mode == 'g'):
     print("distributing randomly as per gnutella routing")
     files = os.listdir('test_data/samples')
     for c in containers:
@@ -47,7 +39,7 @@ if(mode == '-g'):
                 active_files.append(targetfile)
                 subprocess.run(['docker','cp','test_data/samples/'+targetfile ,\
                     c+':/var/cs176/p2p/files/'+targetfile])
-else:#mode = '-d'
+elif(mode == 'd'):
     print("distributing hash(files)modulo #numnodes according to distributed hash tables initialization")
     files = os.listdir('test_data/samples')
     num_nodes = len(containers) #used for modulo in hash_function
