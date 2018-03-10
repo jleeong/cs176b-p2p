@@ -12,7 +12,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-v',action='store_true',help='verbose output to show file distribution')
 parser.add_argument('-m','--mode',default='g', dest='mode',help='[g|d] gnutella or distributed hash table',required=True)
-parser.add_argument('percentage', help='file distribution percentage')
+parser.add_argument('percentage',type=int, help='file distribution percentage')
 
 args = vars(parser.parse_args(sys.argv[1:]))
 
@@ -33,7 +33,7 @@ if(mode == 'g'):
         if verbose: print(c+":")
         # copy over sample files based on file percentage
         for targetfile in files:
-            if random.randint(1,100) <= int(file_percent):
+            if random.randint(1,100) <= file_percent:
                 if verbose: print(" Copying sample file: "+targetfile)
 
                 active_files.append(targetfile)
@@ -45,7 +45,7 @@ elif(mode == 'd'):
     #hash the
     for targetfile in files:
         #compute docker container in which we will copy the file
-        if random.randint(1,100) <= int(file_percent):
+        if random.randint(1,100) <= file_percent:
             m = hashlib.md5(targetfile.encode('utf-8'))
             z = int(m.hexdigest(), 16)
             container_number = z%num_nodes
