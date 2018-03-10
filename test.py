@@ -7,7 +7,7 @@ port_number = 8080
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m','--mode',dest='mode',required=True,help='[g|d] gnutella or distributed hash table routing')
-parser.add_argument('label',help='The label to append to the results file. Suggested format: <#nodes>_<#nodeconn>_<filedist%>')
+parser.add_argument('label',help='The label to append to the results file. Suggested format: nodes_nodeconn_filedist')
 args = vars(parser.parse_args(sys.argv[1:]))
 mode = args['mode']
 

@@ -28,7 +28,7 @@ active_files = []
 files = os.listdir('test_data/samples')
 
 if(mode == 'g'):
-    print("distributing randomly as per gnutella routing")
+    if verbose: print("distributing randomly as per gnutella routing")
     for c in containers:
         if verbose: print(c+":")
         # copy over sample files based on file percentage
@@ -40,7 +40,7 @@ if(mode == 'g'):
                 subprocess.run(['docker','cp','test_data/samples/'+targetfile ,\
                     c+':/var/cs176/p2p/files/'+targetfile])
 elif(mode == 'd'):
-    print("distributing hash(files)modulo #numnodes according to distributed hash tables initialization")
+    if verbose: print("distributing hash(files)modulo #numnodes according to distributed hash tables initialization")
     num_nodes = len(containers) #used for modulo in hash_function
     #hash the
     for targetfile in files:

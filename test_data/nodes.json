@@ -1,4 +1,5 @@
 [
+    "node-0",
     "node-1",
     "node-2",
     "node-3",
@@ -7,6 +8,5 @@
     "node-6",
     "node-7",
     "node-8",
-    "node-9",
-    "node-ingress"
+    "node-9"
 ]

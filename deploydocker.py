@@ -77,7 +77,7 @@ if  docker_nw not in existing_nw:
 
 for c in initialset:
     print(c)
-    if 'ingress' in c:
+    if c == 'node-0':
         cmd = ['docker','run','--rm','--name',c,'-d','--network',docker_nw,\
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
             '-p8080:8080','--hostname='+c,docker_image]
