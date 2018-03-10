@@ -47,7 +47,6 @@ def __main__():
 	for user action. Uses instances of node.Receiver and node.Sender classes for
 	execution. Uses node.Actor abstract class for user input to function call
 	mapping"""
-	print("Starting node...")
 	# read in P2P algorithm type
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-m','--mode',required=True,help='[g|d] gnutella or dht routing mode')
@@ -57,6 +56,7 @@ def __main__():
 	args = vars(parser.parse_args(sys.argv[1:]))
 	mode = args['mode']
 	num_nodes = args['num_nodes']
+	print("Starting node...")
 	s = sender.Sender(mode, num_nodes)
 	r = receiver.Receiver(mode,port_number, num_nodes)
 	# construct and run Receiver thread to run as a daemon process,
