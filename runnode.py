@@ -3,6 +3,7 @@ from node import receiver
 from node import actor
 import threading
 import sys
+import argparse
 
 port_number = 8080
 
@@ -48,11 +49,14 @@ def __main__():
 	mapping"""
 	print("Starting node...")
 	# read in P2P algorithm type
-	if not len(sys.argv)>=2:
-		print("Usage python3 runnode.py [g,d,s] [daemon|client|num_nodes]")
-		sys.exit("ERROR: Missing P2P Mode")
-	mode = sys.argv[1]
-	num_nodes = sys.argv[2]
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-m','--mode',required=True,help='[g|d] gnutella or dht routing mode')
+	parser.add_argument('-d','--daemon',action='store_true',help='run in daemon only mode')
+	parser.add_argument('-c','--client',action='store_true',help='run in client only mode')
+	parser.add_argument('-n','--num_nodes',help='the number of nodes in the p2p network. Define for DHT')
+	args = vars(parser.parse_args(sys.argv[1:]))
+	mode = args['mode']
+	num_nodes = args['num_nodes']
 	s = sender.Sender(mode, num_nodes)
 	r = receiver.Receiver(mode,port_number, num_nodes)
 	# construct and run Receiver thread to run as a daemon process,
@@ -60,7 +64,22 @@ def __main__():
 	rthread = threading.Thread(target=r.listen,)
 	rthread.daemon = True
 	try:
-		if(len(sys.argv) < 3):
+		if args['daemon']:
+			print("Running in daemon only mode.")
+			rthread.start()
+			rthread.join()
+		elif args['client']:
+			print("Running in client only mode.")
+			while True:
+				# prompt user for input
+				uo = input("Prompt:~> ")
+				if uo == 'exit':
+					break
+				elif uo in user_options:
+					user_options[uo](s)
+				else:
+					helpMsg(s)
+		else:
 			rthread.start()
 			# if receiver thread successful, begin REPL loop for main P2P program.
 			if(rthread.isAlive()):
@@ -73,34 +92,6 @@ def __main__():
 						user_options[uo](s)
 					else:
 						helpMsg(s)
-		elif sys.argv[2] == 'daemon':
-			print("Running in daemon only mode.")
-			rthread.start()
-			rthread.join()
-		elif sys.argv[2] == 'client':
-			print("Running in client only mode.")
-			while True:
-				# prompt user for input
-				uo = input("Prompt:~> ")
-				if uo == 'exit':
-					break
-				elif uo in user_options:
-					user_options[uo](s)
-				else:
-					helpMsg(s)
-		elif sys.argv[2].isdigit():
-                        print("Running in client only mode.")
-                        while True:
-                                # prompt user for input                                                                                                                                           
-                                uo = input("Prompt:~> ")
-                                if uo == 'exit':
-                                        break
-                                elif uo in user_options:
-                                        user_options[uo](s)
-                                else:
-                                        helpMsg(s)
-		else:
-			print("Unrecognized parameters.")
 	except KeyboardInterrupt:
 		print('')
 
