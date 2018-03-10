@@ -46,13 +46,11 @@ _replace <SOME_COMMON_STRING> with a substring that appears in every node name l
 If you do not do this, you will not see your changes in the existing or future docker containers
 
 ## Workflow for gathering Gnutella data
-1. `python3 deploydocker.py -n <#number_of_connections_per_node>`
-2. `python3 distributefiles.py -m g <#distribution_percentage> > activefiles`
-3. `mkdir output`
-4. `python3 test.py -m g <#number_nodes>_<#connections>_<#percentage>`
-5. `docker stop $(docker ps -q)`
-6. `python3 deploydocker.py`
-7. `python3 distributefiles.py -m g <#distribution_percentage> > activefiles`
-8. `python3 test.py -m g <#number_nodes>_<#connections>_<#percentage>`
-* Repeat steps 6-8 for variable file distribution percentages.
+1. `python3 deploydocker.py -n <#number_of_connections_per_node> -m g`
+2. `mkdir output`
+3. `python3 test.py -m g <#number_nodes>_<#connections>_<#files>`
+4. `docker stop $(docker ps -q)`
+5. `python3 deploydocker.py -m g`
+8. `python3 test.py -m g <#number_nodes>_<#connections>_<#files>`
+* Repeat steps 6-8 for variable file number percentages.
 * Repeat from step 1 if you want to change the number of node connections or the number of nodes
