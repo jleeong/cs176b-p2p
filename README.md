@@ -44,3 +44,13 @@ _replace <SOME_COMMON_STRING> with a substring that appears in every node name l
 `docker rmi cs176b-p2p`
 
 If you do not do this, you will not see your changes in the existing or future docker containers
+
+## Workflow for gathering Gnutella data
+1. `python3 deploydocker.py -n <#number_of_connections_per_node> -m g`
+2. `mkdir output`
+3. `python3 test.py -m g <#number_nodes>_<#connections>_<#files>`
+4. `docker stop $(docker ps -q)`
+5. `python3 deploydocker.py -m g`
+8. `python3 test.py -m g <#number_nodes>_<#connections>_<#files>`
+* Repeat steps 6-8 for variable file number percentages.
+* Repeat from step 1 if you want to change the number of node connections or the number of nodes

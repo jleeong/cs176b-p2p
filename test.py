@@ -1,18 +1,27 @@
 from node import sender
 from datetime import datetime
 import sys
+import argparse
+import os
+import re
 
 port_number = 8080
+def atoi(text):
+    return int(text) if text.isdigit() else text
+def natural_keys(text):
+    return [ atoi(c) for c in re.split('(\d+)', text) ]
 
-if not len(sys.argv)==2:
-	print("Usage python3 test.py [g,d,s]")
-	sys.exit("ERROR: Missing P2P Mode")
-mode = sys.argv[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('-m','--mode',dest='mode',required=True,help='[g|d] gnutella or distributed hash table routing')
+parser.add_argument('label',help='The label to append to the results file. Suggested format: nodes_nodeconn_filedist')
+args = vars(parser.parse_args(sys.argv[1:]))
+mode = args['mode']
+
 s = sender.Sender(mode)
-with open('activefiles','r') as infiles:
-    files = infiles.readlines()
-ts = datetime.now().strftime('%H%M%S')
-with open('output/test-'+ts+'.csv', 'w') as outfile:
+files = os.listdir('test_data/samples')
+files.sort(key=natural_keys)
+
+with open('output/test-'+args['label']+'.csv', 'w') as outfile:
     outfile.write('Filename,Packet Count,Minimum Hop Length,Hop Chain\n')
     for f in files:
         results = s.sendRequest([f.rstrip(),port_number,'0'])
