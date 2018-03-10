@@ -89,7 +89,7 @@ def __main__():
 				else:
 					helpMsg(s)
 		elif sys.argv[2].isdigit():
-                        print("Running in client only mode with node input.")
+                        print("Running in client only mode.")
                         while True:
                                 # prompt user for input                                                                                                                                           
                                 uo = input("Prompt:~> ")

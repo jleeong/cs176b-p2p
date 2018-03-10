@@ -93,9 +93,9 @@ class Sender(Actor):
 			m = hashlib.md5(request_details[0].encode('utf-8'))
 			z = int(m.hexdigest(), 16)
 			desired_container_number = z%self.number_nodes
-			#print("desired_container_number is %d" % desired_container_number)
+			print("desired_container_number is %d" % desired_container_number)
 			distance_from_container = float("inf")
-			#print("table is ")
+			print("table is ")
 			print(self.neighbor_table)
 			curr_neighbor = 0
 			index = 0
