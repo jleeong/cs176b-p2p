@@ -6,6 +6,13 @@ import sys
 import random
 import argparse
 import hashlib
+import re
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+def natural_keys(text):
+    return [ atoi(c) for c in re.split('(\d+)', text) ]
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-n','--networking',dest='N',type=int,help='generates overlay network with N connections per node')
@@ -99,7 +106,8 @@ verbose = args['v']
 mode = args['mode']
 
 active_files = []
-files = sorted(os.listdir('test_data/samples'))
+files = os.listdir('test_data/samples')
+files.sort(key=natural_keys)
 
 if(mode == 'g'):
     if verbose: print("distributing randomly as per gnutella routing")
