@@ -109,6 +109,7 @@ class Sender(Actor):
 				else:
 					break;
 			print("final index is %d" %curr_neighbor)
+			return []
 		elif(self.mode == 's'):
 			print("semantic")
 		else:
