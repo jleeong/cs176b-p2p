@@ -4,9 +4,10 @@ import os
 import http.client
 import socket
 import threading
+import math
 class Sender(Actor):
 	"""Class to encompass the sending functions of a P2P node"""
-	def __init__(self,m):
+	def __init__(self,m, num_nodes):
 		"""Constructor for the Sender class. Needs to scan local filesystem
 		to determine what data exists on current node. Uses this information
 		to resopnd to P2P requests. m represents the mode to function in and is one of
@@ -14,6 +15,18 @@ class Sender(Actor):
 		respectively."""
 		self.mode = m
 		self.local_address = socket.gethostname()
+		self.neighbor_table = []
+		number_nodes = int(num_nodes)
+		dummy_string = "node-1"
+		#self.my_host_number = socket.gethostname().split('-')
+		number_nodes = int(num_nodes)
+		my_host_number = int(dummy_string.split('-')[1])
+		"""initialize neighbor table for distributed hash based on host number"""
+		i = 0
+		while(len(self.neighbor_table) < math.ceil(math.log2(number_nodes))):
+			self.neighbor_table.append((my_host_number + 2**i) % number_nodes)
+			i+=1
+
 		if os.path.isdir("files"):
 			print("	Sender created")
 		else:
@@ -75,7 +88,7 @@ class Sender(Actor):
 				for conn in neighbor_connections:
 					conn.close()
 		elif(self.mode == 'd'):
-			print("dht")
+			x =2
 		elif(self.mode == 's'):
 			print("semantic")
 		else:

@@ -15,7 +15,7 @@ with open('test_data/nodes.json','r') as nodes:
 if not len(sys.argv) >= 2:
     print("Usage: python3 distributefiles.py <file-percentage> [-v]")
     sys.exit("ERROR: Unrecognized parameters")
- 
+
 verbose = ''
 verbose = len(sys.argv) == 3 and sys.argv[2]=='-v'
 
@@ -48,7 +48,7 @@ if(mode == '-g'):
                 subprocess.run(['docker','cp','test_data/samples/'+targetfile ,\
                     c+':/var/cs176/p2p/files/'+targetfile])
 else:#mode = '-d'
-    print("distributing hash(files)modulo #numnodes according to distributed hash tables initialization")
+    print("distributing hash files according to hash(files)modulo(#numnodes) as required for Distributed Hash Tables")
     files = os.listdir('test_data/samples')
     num_nodes = len(containers) #used for modulo in hash_function
     #hash the

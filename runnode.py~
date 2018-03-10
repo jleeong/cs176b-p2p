@@ -55,7 +55,7 @@ def __main__():
 	mode = sys.argv[1]
 	num_nodes = sys.argv[2]
 	s = sender.Sender(mode, num_nodes)
-	r = receiver.Receiver(mode,port_number, num_nodes)
+	r = receiver.Receiver(mode,port_number)
 	# construct and run Receiver thread to run as a daemon process,
 	# listens passively for incoming TCP requests.
 	rthread = threading.Thread(target=r.listen,)

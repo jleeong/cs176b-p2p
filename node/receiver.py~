@@ -4,7 +4,7 @@ import threading
 import os
 class Receiver:
 	"""Class to encompass the TCP listening functions of the P2P node."""
-	def __init__(self,m,portnum, num_nodes):
+	def __init__(self,m,portnum):
 		"""Constructor for passive TCP receiver on current node. Has
 		internal instance of a receiver to perform responses to incoming
 		P2P requests. m represents the mode to function in and is one of
@@ -12,10 +12,7 @@ class Receiver:
 		respectively."""
 		self.port = portnum
 		self.mode = m
-		self.num_nodes = num_nodes
-		self.sender = Sender(m, self.num_nodes)
-
-
+		self.sender = Sender(m)
 		print("	Receiver created")
 
 	def listen(self):
@@ -90,7 +87,6 @@ class Receiver:
 			finally:
 				cs.close()
 		elif(self.mode == 'd'):
-
 			print("dht")
 		elif(self.mode == 's'):
 			print("semantic")
