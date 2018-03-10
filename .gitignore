@@ -4,6 +4,7 @@ __pycache__/
 **/files
 **hosts
 
+*.csv
 # Compiled class file
 *.class
 

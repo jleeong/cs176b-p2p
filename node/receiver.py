@@ -42,7 +42,7 @@ class Receiver:
 		if(len(data)==2):
 			self.respond([incoming_socket,data])
 		else:
-			print("Invalid request: "+data)
+			print("Invalid request: ",data)
 
 	def respond(self,request_details):
 		"""respond will examine the supplied request_details (supplied by
@@ -63,7 +63,6 @@ class Receiver:
 				# ignore any packets that have our local address in the
 				# hop chain to elimitate infinite loops
 				if self.sender.local_address not in metadata:
-					# append current node to hop chain
 					if filename in os.listdir("files"):
 						# file found on local node; append self to hopchain
 						# increase packet count; reply to client socket
@@ -75,7 +74,6 @@ class Receiver:
 						# file not on local node; sender class will append to hopchain
 						# update packet count; query all neighbors;
 						# return the best path of any results and update the number of packets sent
-						metadata[0] = str(int(metadata[0])+len(self.sender.known_hosts))
 						forward_results = self.sender.sendRequest([filename,self.port,'%'.join(metadata)])
 						if len(forward_results)>0:
 							paths = []
@@ -84,7 +82,7 @@ class Receiver:
 								paths.append((len(c),i))
 								packet_count += int(c[0])
 							result = forward_results[min(paths)[1]]
-							result[0] = str(int(metadata[0]) + packet_count)
+							result[0] = str(len(self.sender.known_hosts) + packet_count)
 							response_msg = "HTTP/1.1 200 OK\n"+'%'.join(result)
 							cs.send(response_msg.encode('utf-8'))
 			finally:

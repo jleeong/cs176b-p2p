@@ -118,10 +118,10 @@ class Sender(Actor):
 			t.start()
 			threads.append(t)
 		# stop execution while waiting for responses
-		print("waiting on responses...")
+		#print("waiting on responses...")
 		for t in threads:
 			t.join()
-		print("done.")
+		#print("done.")
 		return responses
 
 	def response_listener(self,active_socket,responses):

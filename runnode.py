@@ -18,10 +18,9 @@ def getFile(actor):
 			paths.append((len(c),i))
 			packet_counts += int(c[0])
 		result = results[min(paths)[1]]
-		result[0] = str(packet_counts)
 		print("File found at this minimum hop count path:")
 		print(result[1:])
-		print("Total packets generated", result[0])
+		print("Total packets generated", packet_counts*2)
 	else:
 		print("No results found.")
 
