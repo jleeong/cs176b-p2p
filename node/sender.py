@@ -93,23 +93,39 @@ class Sender(Actor):
 			m = hashlib.md5(request_details[0].encode('utf-8'))
 			z = int(m.hexdigest(), 16)
 			desired_container_number = z%self.number_nodes
-			print("desired_container_number is %d" % desired_container_number)
+			#print("desired_container_number is %d" % desired_container_number)
 			distance_from_container = float("inf")
-			print("table is ")
+			print("neighbor table")
 			print(self.neighbor_table)
-			curr_neighbor = 0
+			closest_neighbor_number = 0
 			index = 0
 			for neighbor_number in self.neighbor_table:
 				distance = abs(neighbor_number - desired_container_number)
 				#print("distance is %d" %distance)
 				if( distance < distance_from_container ):
 					distance_from_container = distance
-					curr_neighbor = index
+					closest_neighbor_number = self.neighbor_table[index]
 					index+=1
 				else:
-					break;
-			print("final index is %d" %curr_neighbor)
+					break
+
+			host_name = 'node-'+str(closest_neighbor_number)
+			neighbor_connections = []
+			metadata = request_details[2].split('%')
+			metadata[0] = str(int(metadata[0])+len(self.known_hosts))
+			metadata.append(self.local_address)
+			try:
+				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				s.connect((host_name, request_details[1]))
+				msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)
+				s.send(msg.encode('utf-8'))
+				neighbor_connections.append(s)
+				return self.handle_responses(neighbor_connections)
+			finally:
+				for conn in neighbor_connections:
+					conn.close()
 			return []
+			
 		elif(self.mode == 's'):
 			print("semantic")
 		else:
