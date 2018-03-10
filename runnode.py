@@ -88,6 +88,17 @@ def __main__():
 					user_options[uo](s)
 				else:
 					helpMsg(s)
+		elif sys.argv[2].isdigit():
+                        print("Running in client only mode.")
+                        while True:
+                                # prompt user for input                                                                                                                                           
+                                uo = input("Prompt:~> ")
+                                if uo == 'exit':
+                                        break
+                                elif uo in user_options:
+                                        user_options[uo](s)
+                                else:
+                                        helpMsg(s)
 		else:
 			print("Unrecognized parameters.")
 	except KeyboardInterrupt:

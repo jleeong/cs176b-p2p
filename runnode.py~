@@ -18,10 +18,9 @@ def getFile(actor):
 			paths.append((len(c),i))
 			packet_counts += int(c[0])
 		result = results[min(paths)[1]]
-		result[0] = str(packet_counts)
 		print("File found at this minimum hop count path:")
 		print(result[1:])
-		print("Total packets generated", result[0])
+		print("Total packets generated", packet_counts*2)
 	else:
 		print("No results found.")
 
@@ -55,7 +54,7 @@ def __main__():
 	mode = sys.argv[1]
 	num_nodes = sys.argv[2]
 	s = sender.Sender(mode, num_nodes)
-	r = receiver.Receiver(mode,port_number)
+	r = receiver.Receiver(mode,port_number, num_nodes)
 	# construct and run Receiver thread to run as a daemon process,
 	# listens passively for incoming TCP requests.
 	rthread = threading.Thread(target=r.listen,)
@@ -89,6 +88,17 @@ def __main__():
 					user_options[uo](s)
 				else:
 					helpMsg(s)
+		elif sys.argv[2].isdigit():
+                        print("Running in client only mode with node input.")
+                        while True:
+                                # prompt user for input                                                                                                                                           
+                                uo = input("Prompt:~> ")
+                                if uo == 'exit':
+                                        break
+                                elif uo in user_options:
+                                        user_options[uo](s)
+                                else:
+                                        helpMsg(s)
 		else:
 			print("Unrecognized parameters.")
 	except KeyboardInterrupt:

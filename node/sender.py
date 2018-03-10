@@ -5,6 +5,8 @@ import http.client
 import socket
 import threading
 import math
+import hashlib
+
 class Sender(Actor):
 	"""Class to encompass the sending functions of a P2P node"""
 	def __init__(self,m, num_nodes):
@@ -16,15 +18,15 @@ class Sender(Actor):
 		self.mode = m
 		self.local_address = socket.gethostname()
 		self.neighbor_table = []
-		number_nodes = int(num_nodes)
+		self.number_nodes = int(num_nodes)
 		dummy_string = "node-1"
 		#self.my_host_number = socket.gethostname().split('-')
 		number_nodes = int(num_nodes)
 		my_host_number = int(dummy_string.split('-')[1])
 		"""initialize neighbor table for distributed hash based on host number"""
 		i = 0
-		while(len(self.neighbor_table) < math.ceil(math.log2(number_nodes))):
-			self.neighbor_table.append((my_host_number + 2**i) % number_nodes)
+		while(len(self.neighbor_table) < math.ceil(math.log2(self.number_nodes))):
+			self.neighbor_table.append((my_host_number + 2**i) % self.number_nodes)
 			i+=1
 
 		if os.path.isdir("files"):
@@ -88,7 +90,25 @@ class Sender(Actor):
 				for conn in neighbor_connections:
 					conn.close()
 		elif(self.mode == 'd'):
-			x =2
+			m = hashlib.md5(request_details[0].encode('utf-8'))
+			z = int(m.hexdigest(), 16)
+			desired_container_number = z%self.number_nodes
+			#print("desired_container_number is %d" % desired_container_number)
+			distance_from_container = float("inf")
+			#print("table is ")
+			print(self.neighbor_table)
+			curr_neighbor = 0
+			index = 0
+			for neighbor_number in self.neighbor_table:
+				distance = abs(neighbor_number - desired_container_number)
+				#print("distance is %d" %distance)
+				if( distance < distance_from_container ):
+					distance_from_container = distance
+					curr_neighbor = index
+					index+=1
+				else:
+					break;
+			print("final index is %d" %curr_neighbor)
 		elif(self.mode == 's'):
 			print("semantic")
 		else:
