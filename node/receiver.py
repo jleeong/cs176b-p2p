@@ -56,10 +56,10 @@ class Receiver:
 				# metadata[0] = total number of packets generated so far
 				# metadata[1] = current node path
 				metadata = data[1].split('%')
-				print(metadata)
 				# ignore any packets that have our local address in the
 				# hop chain to elimitate infinite loops
 				if self.sender.local_address not in metadata:
+					print(data)
 					if filename in os.listdir("files"):
 						# file found on local node; append self to hopchain
 						# increase packet count; reply to client socket
