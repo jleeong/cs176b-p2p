@@ -15,9 +15,10 @@ def natural_keys(text):
     return [ atoi(c) for c in re.split('(\d+)', text) ]
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-n','--networking',dest='N',type=int,help='generates overlay network with N connections per node')
+parser.add_argument('-N','--networking',dest='N',type=int,help='generates overlay network with N connections per node')
 parser.add_argument('-f','--files',action='store_true',help='set this flag to redistribute files')
 parser.add_argument('-m','--mode',default='g', dest='mode',help='[g|d] gnutella or distributed hash table',required=True)
+parser.add_argument('-n','--num_nodes',help='the number of nodes in the p2p network. Define for DHT')
 args = vars(parser.parse_args(sys.argv[1:]))
 
 with open("test_data/nodes.json",'r') as nodes:
@@ -37,12 +38,9 @@ if args['N'] != None:
             sys.exit("Too many per node connections.")
         print(str(total)+" nodes found.")
         try:
-            # make host files and container volumes
-            dirs = os.listdir('test_data/container_volumes')
+            # make host files
             for n in initialset:
                 hostfiles[n] = open('test_data/networking/'+n+'.hosts','w')
-                dirname = 'test_data/container_volumes/'+n
-                if n not in dirs: os.makedirs(dirname)
                 ir[n] = []
 
             # populate intermediate representation
@@ -89,7 +87,13 @@ if args['files']:
     active_files = []
     files = os.listdir('test_data/samples')
     files.sort(key=natural_keys)
-
+    #make container volumes
+    subprocess.run(['rm','-rf','test_data/container_volumes'])
+    subprocess.run(['mkdir','test_data/container_volumes'])
+    dirs = os.listdir('test_data/container_volumes')
+    for c in containers:
+        dirname = 'test_data/container_volumes/'+c
+        if c not in dirs: os.makedirs(dirname)
     if(mode == 'g'):
         print("distributing randomly as per gnutella routing")
         for targetfile in files:
@@ -124,15 +128,19 @@ if  docker_nw not in existing_nw:
     subprocess.run(['docker','network','create',docker_nw])
 
 container_volumes = os.getcwd()+"/test_data/container_volumes/"
-
+pycommand = '-u runnode.py -m '+args['mode']+' -d'
+if args['mode']=='d' and args['num_nodes'] != None: pycommand += ' -n ' + args['num_nodes']
+else: exit('Define number of nodes when running in DHT mode.')
 for c in initialset:
     print(c)
     if c == 'node-0':
         cmd = ['docker','run','--rm','--name',c,'-d','--network',docker_nw,\
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
-            '-p8080:8080','--hostname='+c,'-v'+container_volumes+c+':/var/cs176/p2p/files',docker_image]
+            '-p8080:8080','--hostname='+c,'-v'+container_volumes+c+':/var/cs176/p2p/files',docker_image,]
     else:
-        cmd = ['docker','run','--name',c,'-d','--network',docker_nw,\
+        cmd = ['docker','run','--rm','--name',c,'-d','--network',docker_nw,\
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
-            '--hostname='+c,'-v'+container_volumes+c+':/var/cs176/p2p/files',docker_image]
+            '--hostname='+c,'-v'+container_volumes+c+':/var/cs176/p2p/files',docker_image,]
+    cmd = cmd+pycommand.split()
+    print(cmd)
     subprocess.run(cmd)

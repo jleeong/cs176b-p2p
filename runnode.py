@@ -56,7 +56,8 @@ def __main__():
 	args = vars(parser.parse_args(sys.argv[1:]))
 	mode = args['mode']
 	num_nodes = args['num_nodes']
-	print("Starting node...")
+	if mode=='g': print('Starting Gnutella node...')
+	elif mode=='d': print('Starting DHT node...')
 	s = sender.Sender(mode, num_nodes)
 	r = receiver.Receiver(mode,port_number, num_nodes)
 	# construct and run Receiver thread to run as a daemon process,
