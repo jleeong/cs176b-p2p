@@ -22,7 +22,7 @@ s = sender.Sender([mode,num_nodes])
 files = os.listdir('test_data/samples')
 files.sort(key=natural_keys)
 
-with open('output/network-'+args['num_nodes']+'_'+args['num_files']+'.csv', 'w') as outfile:
+with open('output/network-'+args['num_nodes']+'_'+args['num_files']+'.dot', 'w') as outfile:
     print("Recording network...")
     hostfiles = os.listdir('test_data/networking')
     #containers = [ i.split('.')[0] for i in hostfiles if not i == '.gitkeep']
@@ -32,9 +32,12 @@ with open('output/network-'+args['num_nodes']+'_'+args['num_files']+'.csv', 'w')
         ir[fname.split('.')[0]] = [ i.rstrip() for i in inf.readlines() ]
         inf.close()
     print(ir)
+    outfile.write('graph '+args['num_nodes']+'_'+args['num_files']+' {\n')
     for k in ir:
-        line = k+' -> '+' '.join(ir[k])+'\n'
-        outfile.write(line)
+        for i in ir[k]:
+            line = k.split('-')[1]+' -- '+i.split('-')[1]+'\n'
+            outfile.write(line)
+    outfile.write('}')
 
 
 with open('output/test-'+args['num_nodes']+'_'+args['num_files']+'.csv', 'w') as outfile:
