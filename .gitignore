@@ -4,7 +4,7 @@ __pycache__/
 **/files
 **hosts
 node-*
-
+*.dot
 *.csv
 # Compiled class file
 *.class
