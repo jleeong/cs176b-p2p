@@ -107,22 +107,22 @@ class Receiver:
 						metadata[0] = str(1)
 						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)
 						cs.send(response_msg.encode('utf-8'))
-				else:
+					else:
 					# file not on local node; sender class will append to hopchain
 					# update packet count; query all neighbors;
 					# return the best path of any results and update the number of packets sent
-					print("file not found")
-					forward_results = self.sender.sendRequest([filename,self.port,'%'.join(metadata)])
-					if len(forward_results)>0:
-						paths = []
-						packet_count = 0
-						for i,c in enumerate(forward_results):
-							paths.append((len(c),i))
-							packet_count += int(c[0])
-						result = forward_results[min(paths)[1]]
-						result[0] = str(len(self.sender.known_hosts) + packet_count)
-						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(result)
-						cs.send(response_msg.encode('utf-8'))
+						print("file not found")
+						forward_results = self.sender.sendRequest([filename,self.port,'%'.join(metadata)])
+						if len(forward_results)>0:
+							paths = []
+							packet_count = 0
+							for i,c in enumerate(forward_results):
+								paths.append((len(c),i))
+								packet_count += int(c[0])
+							result = forward_results[min(paths)[1]]
+							result[0] = str(len(self.sender.known_hosts) + packet_count)
+							response_msg = "HTTP/1.1 200 OK\n"+'%'.join(result)
+							cs.send(response_msg.encode('utf-8'))
 			finally:
 				cs.close()
 			print("dht")

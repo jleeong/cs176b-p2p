@@ -19,16 +19,23 @@ class Sender(Actor):
 		self.local_address = socket.gethostname()
 		self.neighbor_table = []
 		self.number_nodes = int(num_nodes)
+		print(num_nodes)
 		#dummy_string = "node-1"
 		self.my_host_number = int(socket.gethostname().split('-')[1])
+		print("host number is")
+		print(self.my_host_number)
 		number_nodes = int(num_nodes)
 		#my_host_number = int(dummy_string.split('-')[1])
 		print("my host number is %d" %self.my_host_number)
 		"""initialize neighbor table for distributed hash based on host number"""
 		i = 0
 		while(len(self.neighbor_table) < math.ceil(math.log2(self.number_nodes))):
-			self.neighbor_table.append((my_host_number + 2**i) % self.number_nodes)
+			print("log10")
+			print(math.ceil(math.log2(self.number_nodes)))
+			self.neighbor_table.append((self.my_host_number + 2**i) % self.number_nodes)
 			i+=1
+		print("neighbor table")
+		print(self.neighbor_table)
 
 		if os.path.isdir("files"):
 			print("	Sender created")
@@ -95,7 +102,7 @@ class Sender(Actor):
 			m = hashlib.md5(request_details[0].encode('utf-8'))
 			z = int(m.hexdigest(), 16)
 			desired_container_number = z%self.number_nodes
-			#print("desired_container_number is %d" % desired_container_number)
+			print("desired_container_number is %d" % desired_container_number)
 			distance_from_container = float("inf")
 			#print("neighbor table")
 			#print(self.neighbor_table)
@@ -108,9 +115,8 @@ class Sender(Actor):
 				if( distance < distance_from_container ):
 					distance_from_container = distance
 					closest_neighbor_to_dest = self.neighbor_table[index]
-					index+=1
-				else:
-					break
+				index+=1
+			print("final index is %d and closest_neighbor_to_dest is %d" %(index, closest_neighbor_to_dest))
 
 			"""connect to closest neighbor"""
 			host_name = 'node-'+str(closest_neighbor_to_dest)
@@ -121,7 +127,7 @@ class Sender(Actor):
 			try:
 				"""connect to host and pass list of size one to handle_responses"""
 				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-				s.connect(('192.168.56.101', request_details[1]))
+				s.connect(('169.231.53.136', request_details[1]))
 				#s.connect((host_name, request_details[1]))
 				msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)
 				s.send(msg.encode('utf-8'))
