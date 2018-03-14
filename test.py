@@ -13,8 +13,8 @@ def natural_keys(text):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m','--mode',dest='mode',required=True,help='[g|d] gnutella or distributed hash table routing')
-parser.add_argument('label',help='The label to append to the results file. Suggested format: nodes_nodeconn_filedist')
-parser.add_argument('-n','--num_nodes',help='total number of nodes in the network. Define for DHT')
+parser.add_argument('num_nodes',help='total number of nodes in the network.')
+parser.add_argument('num_files',help='total number of files distributed through the network.')
 args = vars(parser.parse_args(sys.argv[1:]))
 mode = args['mode']
 num_nodes = args['num_nodes']
@@ -22,7 +22,23 @@ s = sender.Sender([mode,num_nodes])
 files = os.listdir('test_data/samples')
 files.sort(key=natural_keys)
 
-with open('output/test-'+args['label']+'.csv', 'w') as outfile:
+with open('output/network-'+args['num_nodes']+'_'+args['num_files']+'.csv', 'w') as outfile:
+    print("Recording network...")
+    hostfiles = os.listdir('test_data/networking')
+    #containers = [ i.split('.')[0] for i in hostfiles if not i == '.gitkeep']
+    ir = {}
+    for fname in hostfiles:
+        inf = open('test_data/networking/'+fname,'r')
+        ir[fname.split('.')[0]] = [ i.rstrip() for i in inf.readlines() ]
+        inf.close()
+    print(ir)
+    for k in ir:
+        line = k+' -> '+' '.join(ir[k])+'\n'
+        outfile.write(line)
+
+
+with open('output/test-'+args['num_nodes']+'_'+args['num_files']+'.csv', 'w') as outfile:
+    print("Retrieving files...")
     outfile.write('Filename,Packet Count,Minimum Hop Length,Hop Chain\n')
     for f in files:
         results = s.sendRequest([f.rstrip(),port_number,'0'])
