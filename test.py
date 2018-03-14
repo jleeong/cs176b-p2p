@@ -26,17 +26,23 @@ with open('output/network-'+args['num_nodes']+'_'+args['num_files']+'.dot', 'w')
     print("Recording network...")
     hostfiles = os.listdir('test_data/networking')
     #containers = [ i.split('.')[0] for i in hostfiles if not i == '.gitkeep']
+    edges = []
     ir = {}
     for fname in hostfiles:
         inf = open('test_data/networking/'+fname,'r')
         ir[fname.split('.')[0]] = [ i.rstrip() for i in inf.readlines() ]
         inf.close()
     print(ir)
-    outfile.write('graph '+args['num_nodes']+'_'+args['num_files']+' {\n')
+    outfile.write('graph '+args['num_nodes']+' {\n')
     for k in ir:
         for i in ir[k]:
-            line = k.split('-')[1]+' -- '+i.split('-')[1]+'\n'
-            outfile.write(line)
+            e = (k.split('-')[1],i.split('-')[1])
+            if (e[1],e[0]) not in edges:
+                edges.append(e)
+
+    for edge in edges:
+        line = edge[0]+' -- '+edge[1]+'\n'
+        outfile.write(line)
     outfile.write('}')
 
 
