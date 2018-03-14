@@ -49,7 +49,7 @@ try:
         target = list(avail)[random.randint(0,len(avail)-1)]
         print(" Adding "+currnode+"->"+target+" to network.")
         ir[currnode].append(target)
-        #ir[target].append(currnode)
+        ir[target].append(currnode)
         workingset.remove(target)
         networkset.append(target)
         currnode=networkset[random.randint(0,len(networkset)-1)]
