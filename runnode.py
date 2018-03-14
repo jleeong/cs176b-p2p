@@ -58,8 +58,8 @@ def __main__():
 	num_nodes = args['num_nodes']
 	if mode=='g': print('Starting Gnutella node...')
 	elif mode=='d': print('Starting DHT node...')
-	s = sender.Sender(mode, num_nodes)
-	r = receiver.Receiver(mode,port_number, num_nodes)
+	s = sender.Sender([mode, num_nodes])
+	r = receiver.Receiver([mode,port_number, num_nodes])
 	# construct and run Receiver thread to run as a daemon process,
 	# listens passively for incoming TCP requests.
 	rthread = threading.Thread(target=r.listen,)

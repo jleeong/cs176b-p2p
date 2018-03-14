@@ -14,10 +14,11 @@ def natural_keys(text):
 parser = argparse.ArgumentParser()
 parser.add_argument('-m','--mode',dest='mode',required=True,help='[g|d] gnutella or distributed hash table routing')
 parser.add_argument('label',help='The label to append to the results file. Suggested format: nodes_nodeconn_filedist')
+parser.add_argument('-n','--num_nodes',help='total number of nodes in the network. Define for DHT')
 args = vars(parser.parse_args(sys.argv[1:]))
 mode = args['mode']
-
-s = sender.Sender(mode)
+num_nodes = args['num_nodes']
+s = sender.Sender([mode,num_nodes])
 files = os.listdir('test_data/samples')
 files.sort(key=natural_keys)
 

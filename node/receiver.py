@@ -4,16 +4,19 @@ import threading
 import os
 class Receiver:
 	"""Class to encompass the TCP listening functions of the P2P node."""
-	def __init__(self,m,portnum, num_nodes):
+	def __init__(self,args):
 		"""Constructor for passive TCP receiver on current node. Has
 		internal instance of a receiver to perform responses to incoming
 		P2P requests. m represents the mode to function in and is one of
 		[g|d|s] for gnutella, distributed hash tables, and semantic routing
-		respectively."""
-		self.port = portnum
-		self.mode = m
-		self.num_nodes = num_nodes
-		self.sender = Sender(m, self.num_nodes)
+		respectively.
+		args[0] = mode
+		args[1] = portnumber
+		args[2] = total number of nodes"""
+		self.mode = args[0]
+		self.port = args[1]
+		if args[2]!=None: self.num_nodes = args[2]
+		self.sender = Sender([args[0],args[2]])
 
 
 		print("	Receiver created")

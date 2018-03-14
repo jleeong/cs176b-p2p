@@ -9,25 +9,27 @@ import hashlib
 
 class Sender(Actor):
 	"""Class to encompass the sending functions of a P2P node"""
-	def __init__(self,m, num_nodes):
+	def __init__(self,args):
 		"""Constructor for the Sender class. Needs to scan local filesystem
 		to determine what data exists on current node. Uses this information
 		to resopnd to P2P requests. m represents the mode to function in and is one of
 		[g|d|s] for gnutella, distributed hash tables, and semantic routing
-		respectively."""
-		self.mode = m
+		respectively.
+		args[0] = mode
+		args[1] = number of nodes in network"""
+		self.mode = args[0]
 		self.local_address = socket.gethostname()
 		self.neighbor_table = []
-		self.number_nodes = int(num_nodes)
-		dummy_string = "node-1"
-		#self.my_host_number = socket.gethostname().split('-')
-		number_nodes = int(num_nodes)
-		my_host_number = int(dummy_string.split('-')[1])
-		"""initialize neighbor table for distributed hash based on host number"""
-		i = 0
-		while(len(self.neighbor_table) < math.ceil(math.log2(self.number_nodes))):
-			self.neighbor_table.append((my_host_number + 2**i) % self.number_nodes)
-			i+=1
+		if args[1] != None:
+			self.number_nodes = int(args[1])
+			dummy_string = "node-1"
+			#self.my_host_number = socket.gethostname().split('-')
+			my_host_number = int(dummy_string.split('-')[1])
+			"""initialize neighbor table for distributed hash based on host number"""
+			i = 0
+			while(len(self.neighbor_table) < math.ceil(math.log2(self.number_nodes))):
+				self.neighbor_table.append((my_host_number + 2**i) % self.number_nodes)
+				i+=1
 
 		if os.path.isdir("files"):
 			print("	Sender created")
