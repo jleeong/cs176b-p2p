@@ -129,8 +129,9 @@ if  docker_nw not in existing_nw:
 
 container_volumes = os.getcwd()+"/test_data/container_volumes/"
 pycommand = '-u runnode.py -m '+args['mode']+' -d'
-if args['mode']=='d' and args['num_nodes'] != None: pycommand += ' -n ' + args['num_nodes']
-else: exit('Define number of nodes when running in DHT mode.')
+if args['mode']=='d':
+    if args['num_nodes'] != None: pycommand += ' -n ' + args['num_nodes']
+    else: exit('Define number of nodes when running in DHT mode.')
 for c in initialset:
     print(c)
     if c == 'node-0':
