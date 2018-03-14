@@ -15,7 +15,6 @@ def natural_keys(text):
     return [ atoi(c) for c in re.split('(\d+)', text) ]
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-N','--networking',dest='N',type=int,help='generates overlay network with N connections per node')
 parser.add_argument('-f','--files',action='store_true',help='set this flag to redistribute files')
 parser.add_argument('-m','--mode',default='g', dest='mode',help='[g|d] gnutella or distributed hash table',required=True)
 parser.add_argument('-n','--num_nodes',help='the number of nodes in the p2p network. Define for DHT')
@@ -26,55 +25,47 @@ with open("test_data/nodes.json",'r') as nodes:
     initialset = json.loads(raw)
 print(initialset)
 
-if args['N'] != None:
-    try:
-        print("Generating Network")
-        # generate the virtual network
-        hostfiles = {}
-        ir = {}
-        total = len(initialset)
-        num_connections = args['N']
-        if(num_connections > total):
-            sys.exit("Too many per node connections.")
-        print(str(total)+" nodes found.")
-        try:
-            # make host files
-            for n in initialset:
-                hostfiles[n] = open('test_data/networking/'+n+'.hosts','w')
-                ir[n] = []
+print("Generating Network")
+# generate the virtual network
+hostfiles = {}
+ir = {}
+total = len(initialset)
+print(str(total)+" nodes found.")
+try:
+    # make host files
+    for n in initialset:
+        hostfiles[n] = open('test_data/networking/'+n+'.hosts','w')
+        ir[n] = []
 
-            # populate intermediate representation
-            for i in range(num_connections):
-                print("Connection: "+str(i))
-                workingset = initialset[:]
-                networkset = []
-                currnode = workingset[0]
-                networkset.append(currnode)
-                while len(workingset)>1:
-                    avail = set(workingset) - set(networkset)
-                    #print(currnode, ir[currnode], avail)
-                    target = list(avail)[random.randint(1,len(avail))-1]
-                    print(" Adding "+currnode+"->"+target+" to network.")
-                    ir[currnode].append(target)
-                    #ir[target].append(currnode)
-                    workingset.remove(target)
-                    networkset.append(target)
-                    currnode=target
-                # last non-connected node
-                target = workingset[0]
-                print("Adding "+currnode+"->"+target+" to network.")
-                ir[currnode].append(target)
-                #ir[target].append(currnode)
+    # generate connected graph
+    # populate intermediate representation
+    workingset = initialset[:]
+    networkset = []
+    currnode = workingset[0]
+    networkset.append(currnode)
+    while len(workingset)>1:
+        avail = set(workingset) - set(networkset)
+        #print(currnode, ir[currnode], avail)
+        target = list(avail)[random.randint(0,len(avail)-1)]
+        print(" Adding "+currnode+"->"+target+" to network.")
+        ir[currnode].append(target)
+        #ir[target].append(currnode)
+        workingset.remove(target)
+        networkset.append(target)
+        currnode=networkset[random.randint(0,len(networkset)-1)]
+    # last non-connected node
+    target = workingset[0]
+    print("Adding "+currnode+"->"+target+" to network.")
+    ir[currnode].append(target)
+    #ir[target].append(currnode)
 
-            print("Final network:")
-        finally:
-            # write and close host files
-            for fname in hostfiles:
-                print(fname+":", ir[fname])
-                hostfiles[fname].write('\n'.join(set(ir[fname])))
-                hostfiles[fname].close()
-    except TypeError:
-        print("Invalid command line arg. Network not generated.")
+    print("Final network:")
+finally:
+    # write and close host files
+    for fname in hostfiles:
+        print(fname+":", ir[fname])
+        hostfiles[fname].write('\n'.join(set(ir[fname])))
+        hostfiles[fname].close()
 
 # distribute files
 if args['files']:
@@ -143,5 +134,5 @@ for c in initialset:
             '-v'+os.getcwd()+'/test_data/networking/'+c+'.hosts:/var/cs176/p2p/hosts',\
             '--hostname='+c,'-v'+container_volumes+c+':/var/cs176/p2p/files',docker_image,]
     cmd = cmd+pycommand.split()
-    print(cmd)
+    #print(cmd)
     subprocess.run(cmd)
