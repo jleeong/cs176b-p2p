@@ -33,6 +33,8 @@ total = len(initialset)
 print(str(total)+" nodes found.")
 try:
     # make host files
+    subprocess.run(['rm','-rf','test_data/networking'])
+    subprocess.run(['mkdir','test_data/networking'])
     for n in initialset:
         hostfiles[n] = open('test_data/networking/'+n+'.hosts','w')
         ir[n] = []
