@@ -19,10 +19,11 @@ class Sender(Actor):
 		self.local_address = socket.gethostname()
 		self.neighbor_table = []
 		self.number_nodes = int(num_nodes)
-		dummy_string = "node-1"
-		#self.my_host_number = socket.gethostname().split('-')
+		#dummy_string = "node-1"
+		self.my_host_number = int(socket.gethostname().split('-')[1])
 		number_nodes = int(num_nodes)
-		my_host_number = int(dummy_string.split('-')[1])
+		#my_host_number = int(dummy_string.split('-')[1])
+		print("my host number is %d" %self.my_host_number)
 		"""initialize neighbor table for distributed hash based on host number"""
 		i = 0
 		while(len(self.neighbor_table) < math.ceil(math.log2(self.number_nodes))):
@@ -90,26 +91,44 @@ class Sender(Actor):
 				for conn in neighbor_connections:
 					conn.close()
 		elif(self.mode == 'd'):
+			"""compute hash to find destination host number"""
 			m = hashlib.md5(request_details[0].encode('utf-8'))
 			z = int(m.hexdigest(), 16)
 			desired_container_number = z%self.number_nodes
-			print("desired_container_number is %d" % desired_container_number)
+			#print("desired_container_number is %d" % desired_container_number)
 			distance_from_container = float("inf")
-			print("table is ")
-			print(self.neighbor_table)
-			curr_neighbor = 0
+			#print("neighbor table")
+			#print(self.neighbor_table)
+			closest_neighbor_to_dest = 0
 			index = 0
+			"""find closest neighbor"""
 			for neighbor_number in self.neighbor_table:
 				distance = abs(neighbor_number - desired_container_number)
 				#print("distance is %d" %distance)
 				if( distance < distance_from_container ):
 					distance_from_container = distance
-					curr_neighbor = index
+					closest_neighbor_to_dest = self.neighbor_table[index]
 					index+=1
 				else:
-					break;
-			print("final index is %d" %curr_neighbor)
-			return []
+					break
+
+			"""connect to closest neighbor"""
+			host_name = 'node-'+str(closest_neighbor_to_dest)
+			neighbor_connections = []
+			metadata = request_details[2].split('%')
+			metadata[0] = str(int(metadata[0])+len(self.known_hosts))
+			metadata.append(self.local_address)
+			try:
+				"""connect to host and pass list of size one to handle_responses"""
+				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				s.connect(('192.168.56.101', request_details[1]))
+				#s.connect((host_name, request_details[1]))
+				msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)
+				s.send(msg.encode('utf-8'))
+				neighbor_connections.append(s)
+				return self.handle_responses(neighbor_connections)
+			finally:
+				neighbor_connections[0].close()
 		elif(self.mode == 's'):
 			print("semantic")
 		else:

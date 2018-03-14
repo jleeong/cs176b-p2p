@@ -21,7 +21,7 @@ class Receiver:
 	def listen(self):
 		"""listen places the Receiver object in an execution loop to listen
 		for incoming TCP requests to the designated port. After receiving a
-		request, it will determine the current node has the desired resource
+		request, it will determine if the current node has the desired resource
 		and respond accordingly"""
 		ss = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		ss.bind(('',self.port))
@@ -88,7 +88,43 @@ class Receiver:
 			finally:
 				cs.close()
 		elif(self.mode == 'd'):
-
+			try:
+				cs = request_details[0]
+				data = request_details[1]
+				filename = data[0].split(' ')[1]
+				# metadata[0] = total number of packets generated so far
+				# metadata[1] = current node path
+				metadata = data[1].split('%')
+				# ignore any packets that have our local address in the
+				# hop chain to elimitate infinite loops
+				if self.sender.local_address not in metadata:
+					print(data)
+					if filename in os.listdir("files"):
+						# file found on local node; append self to hopchain
+						# increase packet count; reply to client socket
+						print("found file")
+						metadata.append(self.sender.local_address)
+						metadata[0] = str(1)
+						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(metadata)
+						cs.send(response_msg.encode('utf-8'))
+				else:
+					# file not on local node; sender class will append to hopchain
+					# update packet count; query all neighbors;
+					# return the best path of any results and update the number of packets sent
+					print("file not found")
+					forward_results = self.sender.sendRequest([filename,self.port,'%'.join(metadata)])
+					if len(forward_results)>0:
+						paths = []
+						packet_count = 0
+						for i,c in enumerate(forward_results):
+							paths.append((len(c),i))
+							packet_count += int(c[0])
+						result = forward_results[min(paths)[1]]
+						result[0] = str(len(self.sender.known_hosts) + packet_count)
+						response_msg = "HTTP/1.1 200 OK\n"+'%'.join(result)
+						cs.send(response_msg.encode('utf-8'))
+			finally:
+				cs.close()
 			print("dht")
 		elif(self.mode == 's'):
 			print("semantic")
