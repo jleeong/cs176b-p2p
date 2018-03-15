@@ -18,11 +18,11 @@ parser.add_argument('num_files',help='total number of files distributed through 
 args = vars(parser.parse_args(sys.argv[1:]))
 mode = args['mode']
 num_nodes = args['num_nodes']
-s = sender.Sender([mode,num_nodes])
+s = sender.Sender(['g',num_nodes])
 files = os.listdir('test_data/samples')
 files.sort(key=natural_keys)
 
-with open('output/network-'+args['num_nodes']+'_'+args['num_files']+'.dot', 'w') as outfile:
+with open('output/network-'+args['mode']+'-'+args['num_nodes']+'_'+args['num_files']+'.dot', 'w') as outfile:
     print("Recording network...")
     hostfiles = os.listdir('test_data/networking')
     #containers = [ i.split('.')[0] for i in hostfiles if not i == '.gitkeep']
@@ -46,7 +46,7 @@ with open('output/network-'+args['num_nodes']+'_'+args['num_files']+'.dot', 'w')
     outfile.write('}')
 
 
-with open('output/test-'+args['num_nodes']+'_'+args['num_files']+'.csv', 'w') as outfile:
+with open('output/test-'+args['mode']+'-'+args['num_nodes']+'_'+args['num_files']+'.csv', 'w') as outfile:
     print("Retrieving files...")
     outfile.write('Filename,Packet Count,Minimum Hop Length,Hop Chain\n')
     for f in files:
