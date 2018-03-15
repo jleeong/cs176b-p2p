@@ -23,14 +23,15 @@ class Sender(Actor):
 		if args[1] != None:
 			self.number_nodes = int(args[1])
 			dummy_string = "node-1"
-			#self.my_host_number = socket.gethostname().split('-')
-			my_host_number = int(dummy_string.split('-')[1])
+			self.my_host_number = int(socket.gethostname().split('-')[1])
+			#my_host_number = int(dummy_string.split('-')[1])
 			"""initialize neighbor table for distributed hash based on host number"""
 			i = 0
 			while(len(self.neighbor_table) < math.ceil(math.log2(self.number_nodes))):
-				self.neighbor_table.append((my_host_number + 2**i) % self.number_nodes)
+				self.neighbor_table.append((self.my_host_number + 2**i) % self.number_nodes)
 				i+=1
 
+		print(self.neighbor_table)
 		if os.path.isdir("files"):
 			print("	Sender created")
 		else:
@@ -92,26 +93,43 @@ class Sender(Actor):
 				for conn in neighbor_connections:
 					conn.close()
 		elif(self.mode == 'd'):
+			"""compute hash to find destination host number"""
 			m = hashlib.md5(request_details[0].encode('utf-8'))
 			z = int(m.hexdigest(), 16)
 			desired_container_number = z%self.number_nodes
 			print("desired_container_number is %d" % desired_container_number)
 			distance_from_container = float("inf")
-			print("table is ")
-			print(self.neighbor_table)
-			curr_neighbor = 0
+			#print("neighbor table")
+			#print(self.neighbor_table)
+			closest_neighbor_to_dest = 0
 			index = 0
+			"""find closest neighbor"""
 			for neighbor_number in self.neighbor_table:
-				distance = abs(neighbor_number - desired_container_number)
-				#print("distance is %d" %distance)
-				if( distance < distance_from_container ):
-					distance_from_container = distance
-					curr_neighbor = index
-					index+=1
-				else:
-					break;
-			print("final index is %d" %curr_neighbor)
-			return []
+			    distance = abs(neighbor_number - desired_container_number)
+			    #print("distance is %d" %distance)
+			    if( distance < distance_from_container and neighbor_number <= desired_container_number ):
+			        distance_from_container = distance
+			        closest_neighbor_to_dest = self.neighbor_table[index]
+			    index+=1
+			print("final index is %d and closest_neighbor_to_dest is %d" %(index, closest_neighbor_to_dest))
+
+			"""connect to closest neighbor"""
+			host_name = 'node-'+str(closest_neighbor_to_dest)
+			neighbor_connections = []
+			metadata = request_details[2].split('%')
+			metadata[0] = str(int(metadata[0])+len(self.known_hosts))
+			metadata.append(self.local_address)
+			try:
+			    """connect to host and pass list of size one to handle_responses"""
+			    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			    #s.connect(('169.231.53.136', request_details[1]))
+			    s.connect((host_name, request_details[1]))
+			    msg = "GET "+request_details[0]+" HTTP/1.1\n"+'%'.join(metadata)
+			    s.send(msg.encode('utf-8'))
+			    neighbor_connections.append(s)
+			    return self.handle_responses(neighbor_connections)
+			finally:
+			    neighbor_connections[0].close()
 		elif(self.mode == 's'):
 			print("semantic")
 		else:
